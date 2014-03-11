@@ -13,5 +13,6 @@ public class MyActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        //coment
     }
 }
