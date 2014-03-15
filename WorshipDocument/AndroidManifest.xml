@@ -14,5 +14,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity"/>
+        <activity android:name=".ContentActivity"/>
+        <activity android:name=".DetailActivity"/>
     </application>
 </manifest>
