@@ -13,7 +13,6 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,13 +38,14 @@ public class GridAdapter extends BaseAdapter
         this.dirFrom = dirFrom;
         this.bitmapsFiles = listBitmap(dirFrom);
         options = new DisplayImageOptions.Builder()
-                .showImageForEmptyUri(0)
-                .showImageOnFail(0)
+                .showImageOnLoading(R.drawable.ic_launcher)
+                .showImageForEmptyUri(R.drawable.ic_launcher)
+                .showImageOnFail(R.drawable.ic_launcher)
                 .cacheInMemory(true)
                 .cacheOnDisc(true)
                 .considerExifParams(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
-                .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+                .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
                 .build();
 
     }
@@ -73,10 +73,9 @@ public class GridAdapter extends BaseAdapter
     {
         ImageView imageView = new ImageView(mContext);
         imageLoader.init(ImageLoaderConfiguration.createDefault(mContext));
-        imageLoader.displayImage(bitmapsFiles.get(position),imageView,options);
-        imageView.setImageBitmap(bitmap);
+        imageLoader.displayImage(bitmapsFiles.get(position), imageView, options);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        imageView.setLayoutParams(new GridView.LayoutParams(120, 210));
+        imageView.setLayoutParams(new GridView.LayoutParams(150, 250));
         return imageView;
     }
 
@@ -90,9 +89,7 @@ public class GridAdapter extends BaseAdapter
             {
                 for (int i = 0; i < fileList.length; i++)
                 {
-                    InputStream istr = mContext.getAssets().open(dirFrom + "/" + fileList[i]);
-//                    Bitmap bitmap = BitmapFactory.decodeStream(istr);
-                    assetFiles.add(fileList[i]);
+                    assetFiles.add("assets://"+dirFrom + "/"+fileList[i]);
                 }
             }
         }
