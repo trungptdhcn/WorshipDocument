@@ -38,6 +38,5 @@ public class ContentActivity extends FragmentActivity
                 startActivity(intent);
             }
         });
-
     }
 }

@@ -36,6 +36,7 @@ public class ViewPagerAdapter extends PagerAdapter
     private List<ContentDetail> contentDetailList = new ArrayList<ContentDetail>();
     protected ImageLoader imageLoader = ImageLoader.getInstance();
     DisplayImageOptions options;
+    public static List<String> assetFiles = new ArrayList<String>();
 
     ViewPagerAdapter(Context context,String dirFromHtml,String dirFromImage)
     {
@@ -46,7 +47,7 @@ public class ViewPagerAdapter extends PagerAdapter
                 .showImageOnLoading(R.drawable.ic_launcher)
                 .showImageForEmptyUri(R.drawable.ic_launcher)
                 .showImageOnFail(R.drawable.ic_launcher)
-                .cacheInMemory(true)
+//                .cacheInMemory(true)
                 .cacheOnDisc(true)
                 .considerExifParams(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
@@ -95,10 +96,10 @@ public class ViewPagerAdapter extends PagerAdapter
         try
         {
             String[] fileList = context.getAssets().list(dirFromHtml);
-            List<String> listFileImage = listBitmap(dirFromImage);
+            List<String> listFileImage = assetFiles;
             if (fileList != null && listFileImage != null)
             {
-                for (int i = 0; i < fileList.length; i++)
+                for (int i = 0; i <= fileList.length -1 ; i++)
                 {
                     ContentDetail contentDetail = new ContentDetail();
                     String tContents = "";
@@ -121,14 +122,12 @@ public class ViewPagerAdapter extends PagerAdapter
                     contentDetail.setContent(t);
                     contentDetail.setFileImage(listFileImage.get(i));
                     contentDetails.add(contentDetail);
-
-
                 }
             }
         }
         catch (IOException e)
         {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
         return contentDetails;
     }
@@ -152,24 +151,24 @@ public class ViewPagerAdapter extends PagerAdapter
         catch(Exception ex){}
     }
 
-    private List<String> listBitmap(String dirFrom)
-    {
-        List<String> assetFiles = new ArrayList<String>();
-        try
-        {
-            String[] fileList = context.getAssets().list(dirFrom);
-            if (fileList != null)
-            {
-                for (int i = 0; i < fileList.length; i++)
-                {
-                    assetFiles.add("assets://"+dirFrom + "/"+fileList[i]);
-                }
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        return assetFiles;
-    }
+//    private List<String> listBitmap(String dirFrom)
+//    {
+//
+//        try
+//        {
+//            String[] fileList = context.getAssets().list(dirFrom);
+//            if (fileList != null)
+//            {
+//                for (int i = 0; i <= fileList.length -1 ; i++)
+//                {
+//                    assetFiles.add("assets://"+dirFrom + "/"+fileList[i]);
+//                }
+//            }
+//        }
+//        catch (IOException e)
+//        {
+//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//        }
+//        return assetFiles;
+//    }
 }
