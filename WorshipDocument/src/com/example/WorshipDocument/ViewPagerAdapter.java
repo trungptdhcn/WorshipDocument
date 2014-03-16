@@ -75,7 +75,7 @@ public class ViewPagerAdapter extends PagerAdapter
         view = inflater.inflate(R.layout.detail_item, null);
         ((ViewPager) container).addView(view, 0);
         imageLoader.init(ImageLoaderConfiguration.createDefault(context));
-        TextView tvContent = (TextView) view.findViewById(R.id.detail_item_tvContent);
+        JellyBeanSpanFixTextView tvContent = (JellyBeanSpanFixTextView) view.findViewById(R.id.detail_item_tvContent);
         ImageView ivImage = (ImageView) view.findViewById(R.id.detail_item_ivImage);
         imageLoader.displayImage(contentDetailList.get(position).getFileImage(), ivImage, options);
         tvContent.setText(Html.fromHtml(contentDetailList.get(position).getContent()));
