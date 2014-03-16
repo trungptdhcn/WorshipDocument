@@ -39,11 +39,11 @@ public class ViewPagerAdapter extends PagerAdapter
     DisplayImageOptions options;
     public static List<String> assetFiles = new ArrayList<String>();
 
-    ViewPagerAdapter(Context context,String dirFromHtml,String dirFromImage)
+    ViewPagerAdapter(Context context, String dirFromHtml, String dirFromImage)
     {
 
         this.context = context;
-        this.contentDetailList = getContentDetailList(dirFromHtml,dirFromImage);
+        this.contentDetailList = getContentDetailList(dirFromHtml, dirFromImage);
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.ic_launcher)
                 .showImageForEmptyUri(R.drawable.ic_launcher)
@@ -77,21 +77,21 @@ public class ViewPagerAdapter extends PagerAdapter
         view = inflater.inflate(R.layout.detail_item, null);
         ((ViewPager) container).addView(view, 0);
         imageLoader.init(ImageLoaderConfiguration.createDefault(context));
-        final RelativeLayout relativeLayoutContainer = (RelativeLayout)view.findViewById(R.id.detail_item_rlContainerContent);
-        ImageView ivZomIn = (ImageView)view.findViewById(R.id.detail_item_btZom_in);
-        ImageView ivZomOut = (ImageView)view.findViewById(R.id.detail_item_btZom_out);
-        WebView webView  = (WebView)view.findViewById(R.id.detail_item_wvContent);
+        final RelativeLayout relativeLayoutContainer = (RelativeLayout) view.findViewById(R.id.detail_item_rlContainerContent);
+        ImageView ivZomIn = (ImageView) view.findViewById(R.id.detail_item_btZom_in);
+        ImageView ivZomOut = (ImageView) view.findViewById(R.id.detail_item_btZom_out);
+        final WebView webView = (WebView) view.findViewById(R.id.detail_item_wvContent);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setSupportZoom(true);
         final String mimeType = "text/html";
         final String encoding = "UTF-8";
-        webView.loadDataWithBaseURL("",contentDetailList.get(position).getContent(),mimeType, encoding, "");
+        webView.loadDataWithBaseURL("", contentDetailList.get(position).getContent(), mimeType, encoding, "");
         ivZomIn.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                zoom(relativeLayoutContainer,2f,2f,new PointF(0,0));
+                webView.zoomIn();
             }
         });
         ivZomOut.setOnClickListener(new View.OnClickListener()
@@ -99,9 +99,10 @@ public class ViewPagerAdapter extends PagerAdapter
             @Override
             public void onClick(View view)
             {
-                zoom(relativeLayoutContainer,0.5f,0.5f,new PointF(0,0));
+                webView.zoomOut();
             }
         });
+
         ImageView ivImage = (ImageView) view.findViewById(R.id.detail_item_ivImage);
         imageLoader.displayImage(contentDetailList.get(position).getFileImage(), ivImage, options);
 
@@ -114,7 +115,7 @@ public class ViewPagerAdapter extends PagerAdapter
         ((ViewPager) container).removeView((LinearLayout) object);
     }
 
-    public List<ContentDetail> getContentDetailList(String dirFromHtml,String dirFromImage)
+    public List<ContentDetail> getContentDetailList(String dirFromHtml, String dirFromImage)
     {
         List<ContentDetail> contentDetails = new ArrayList<ContentDetail>();
         try
@@ -123,7 +124,7 @@ public class ViewPagerAdapter extends PagerAdapter
             List<String> listFileImage = assetFiles;
             if (fileList != null && listFileImage != null)
             {
-                for (int i = 0; i <= fileList.length -1 ; i++)
+                for (int i = 0; i <= fileList.length - 1; i++)
                 {
                     ContentDetail contentDetail = new ContentDetail();
                     String tContents = "";
@@ -131,10 +132,13 @@ public class ViewPagerAdapter extends PagerAdapter
                     ByteArrayOutputStream oas = new ByteArrayOutputStream();
                     copyStream(stream, oas);
                     String t = oas.toString();
-                    try {
+                    try
+                    {
                         oas.close();
                         oas = null;
-                    } catch (IOException e) {
+                    }
+                    catch (IOException e)
+                    {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
@@ -152,25 +156,28 @@ public class ViewPagerAdapter extends PagerAdapter
     }
 
 
-
     private void copyStream(InputStream is, OutputStream os)
     {
         final int buffer_size = 1024;
         try
         {
-            byte[] bytes=new byte[buffer_size];
-            for(;;)
+            byte[] bytes = new byte[buffer_size];
+            for (; ; )
             {
-                int count=is.read(bytes, 0, buffer_size);
-                if(count==-1)
+                int count = is.read(bytes, 0, buffer_size);
+                if (count == -1)
+                {
                     break;
+                }
                 os.write(bytes, 0, count);
             }
         }
-        catch(Exception ex){}
+        catch (Exception ex)
+        {
+        }
     }
 
-    public void zoom(RelativeLayout view,Float scaleX, Float scaleY, PointF pivot)
+    public void zoom(RelativeLayout view, Float scaleX, Float scaleY, PointF pivot)
     {
         view.setPivotX(pivot.x);
         view.setPivotY(pivot.y);
