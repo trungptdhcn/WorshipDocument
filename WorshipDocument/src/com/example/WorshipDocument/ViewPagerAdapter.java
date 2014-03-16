@@ -34,7 +34,7 @@ public class ViewPagerAdapter extends PagerAdapter
     private List<ContentDetail> contentDetailList = new ArrayList<ContentDetail>();
     protected ImageLoader imageLoader = ImageLoader.getInstance();
     DisplayImageOptions options;
-    public static List<String> assetFiles = new ArrayList<String>();
+    public List<String> assetFiles = new ArrayList<String>();
 
     ViewPagerAdapter(Context context, String dirFromHtml, String dirFromImage)
     {

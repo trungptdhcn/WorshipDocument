@@ -22,29 +22,34 @@ public class ContentActivity extends FragmentActivity
     private GridView gridView;
     private GridAdapter adapter;
     String flag;
+
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_layout);
-        gridView = (GridView)findViewById(R.id.grid_view);
-        flag= getIntent().getStringExtra("flag");
+        gridView = (GridView) findViewById(R.id.grid_view);
+        flag = getIntent().getStringExtra("flag");
+        if (gridView.getAdapter() != null)
+        {
+            gridView.removeAllViews();
+        }
         if (flag.equals("flag_1"))
         {
-            adapter = new GridAdapter(this,new ArrayList<Bitmap>(),"image_1");
-        } else if(flag.equals("flag_2"))
-        {
-            adapter = new GridAdapter(this,new ArrayList<Bitmap>(),"image_2");
+            adapter = new GridAdapter(this, new ArrayList<Bitmap>(), "image_1");
         }
-
+        else if (flag.equals("flag_2"))
+        {
+            adapter = new GridAdapter(this, new ArrayList<Bitmap>(), "image_2");
+        }
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
             {
-                Intent intent = new Intent(getApplicationContext(),DetailActivity.class);
-                intent.putExtra("current_image",position);
-                intent.putExtra("flag",flag);
+                Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+                intent.putExtra("current_image", position);
+                intent.putExtra("flag", flag);
                 startActivity(intent);
             }
         });

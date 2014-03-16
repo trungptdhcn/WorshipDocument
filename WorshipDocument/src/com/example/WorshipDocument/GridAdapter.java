@@ -31,6 +31,7 @@ public class GridAdapter extends BaseAdapter
     Bitmap bitmap;
     protected ImageLoader imageLoader = ImageLoader.getInstance();
     DisplayImageOptions options;
+    public List<String> assetFiles = new ArrayList<String>();
 
     public GridAdapter(Context mContext, List<Bitmap> listBitmap, String dirFrom)
     {
@@ -47,7 +48,6 @@ public class GridAdapter extends BaseAdapter
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
                 .build();
-
     }
 
     @Override
@@ -88,7 +88,7 @@ public class GridAdapter extends BaseAdapter
             {
                 for (int i = 0; i <= fileList.length -1; i++)
                 {
-                    ViewPagerAdapter.assetFiles.add("assets://"+dirFrom + "/"+fileList[i]);
+                    assetFiles.add("assets://"+dirFrom + "/"+fileList[i]);
                 }
             }
         }
@@ -96,6 +96,6 @@ public class GridAdapter extends BaseAdapter
         {
             e.printStackTrace();
         }
-        return ViewPagerAdapter.assetFiles;
+        return assetFiles;
     }
 }
