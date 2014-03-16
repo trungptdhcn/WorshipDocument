@@ -44,6 +44,7 @@ public class DetailActivity extends Activity implements View.OnClickListener
     private ImageView btHome;
     private ImageView btCopy;
     int currentPosition;
+    String flag;
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -56,15 +57,19 @@ public class DetailActivity extends Activity implements View.OnClickListener
         btNext = (ImageView) findViewById(R.id.detail_layout_btNext);
         btHome = (ImageView) findViewById(R.id.detail_layout_btHome);
         btCopy = (ImageView) findViewById(R.id.detail_layout_btCopy);
-
+        flag = getIntent().getStringExtra("flag");
         audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         btPlayOrStop = (ImageView) findViewById(R.id.ivPlayOrStop);
         tvTimeCur = (TextView) findViewById(R.id.program_tvTimeCur);
         tvTimePlay = (TextView) findViewById(R.id.program_tvTimePlay);
         sbTime = (SeekBar) findViewById(R.id.program_sbTime);
-
-        viewPagerAdapter = new ViewPagerAdapter(this, "html_1", "image_1");
-        viewPagerAdapter = new ViewPagerAdapter(this, "html_1", "image_1");
+        if(flag.equals("flag_1"))
+        {
+            viewPagerAdapter = new ViewPagerAdapter(this, "html_1", "image_1");
+        }else if (flag.equals("flag_2"))
+        {
+            viewPagerAdapter = new ViewPagerAdapter(this, "html_2", "image_2");
+        }
         viewPager.setAdapter(viewPagerAdapter);
         int position = getIntent().getIntExtra("current_image", -1);
         if (position == -1)

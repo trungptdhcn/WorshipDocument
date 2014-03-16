@@ -20,5 +20,6 @@
                   android:screenOrientation="portrait"/>
         <activity android:name=".DetailActivity"
                   android:screenOrientation="portrait"/>
+        <activity android:name=".ContentActivity2"/>
     </application>
 </manifest>
