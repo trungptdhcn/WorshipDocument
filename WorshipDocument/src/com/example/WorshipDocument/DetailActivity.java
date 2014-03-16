@@ -26,7 +26,6 @@ public class DetailActivity extends Activity implements View.OnClickListener
     private int mediaDuration;
     private int mediaPosition;
     private AudioManager audioManager = null;
-    private SeekBar sbVolume;
     private SeekBar sbTime;
     private ImageView btPlayOrStop;
     private TextView tvTimeCur;
@@ -53,21 +52,35 @@ public class DetailActivity extends Activity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_layout);
         viewPager = (ViewPager) findViewById(R.id.myfivepanelpager);
-        btFirst = (ImageView)findViewById(R.id.detail_layout_btFirst);
-        btLast = (ImageView)findViewById(R.id.detail_layout_btLast);
-        btPrevious = (ImageView)findViewById(R.id.detail_layout_btPrevious);
-        btNext = (ImageView)findViewById(R.id.detail_layout_btNext);
-        btHome = (ImageView)findViewById(R.id.detail_layout_btHome);
-        btCopy = (ImageView)findViewById(R.id.detail_layout_btCopy);
-        btZomIn = (ImageView)findViewById(R.id.detail_layout_btZom_In);
-        bZomOut = (ImageView)findViewById(R.id.detail_layout_btZom_Out);
+        btFirst = (ImageView) findViewById(R.id.detail_layout_btFirst);
+        btLast = (ImageView) findViewById(R.id.detail_layout_btLast);
+        btPrevious = (ImageView) findViewById(R.id.detail_layout_btPrevious);
+        btNext = (ImageView) findViewById(R.id.detail_layout_btNext);
+        btHome = (ImageView) findViewById(R.id.detail_layout_btHome);
+        btCopy = (ImageView) findViewById(R.id.detail_layout_btCopy);
+        btZomIn = (ImageView) findViewById(R.id.detail_layout_btZom_In);
+        bZomOut = (ImageView) findViewById(R.id.detail_layout_btZom_Out);
 
         audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         btPlayOrStop = (ImageView) findViewById(R.id.ivPlayOrStop);
         tvTimeCur = (TextView) findViewById(R.id.program_tvTimeCur);
         tvTimePlay = (TextView) findViewById(R.id.program_tvTimePlay);
         sbTime = (SeekBar) findViewById(R.id.program_sbTime);
-        getSource();
+
+        viewPagerAdapter = new ViewPagerAdapter(this, "html_1", "image_1");
+        viewPager.setAdapter(viewPagerAdapter);
+        int position = getIntent().getIntExtra("current_image", -1);
+        if (position == -1)
+        {
+            currentPosition = 0;
+        }
+        else
+        {
+            currentPosition = position;
+        }
+        getSource(currentPosition + 1);
+        viewPager.setCurrentItem(currentPosition);
+        clickEvent();
         this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
         getTimeOfRecordAndShow();
         btPlayOrStop.setOnClickListener(this);
@@ -80,20 +93,6 @@ public class DetailActivity extends Activity implements View.OnClickListener
                 return false;
             }
         });
-
-        viewPagerAdapter = new ViewPagerAdapter(this, "html_1","image_1");
-        viewPager.setAdapter(viewPagerAdapter);
-        int position = getIntent().getIntExtra("current_image", -1);
-        if (position == -1)
-        {
-            currentPosition = 0;
-        }
-        else
-        {
-            currentPosition = position;
-        }
-        viewPager.setCurrentItem(currentPosition);
-        clickEvent();
 
     }
 
@@ -135,7 +134,6 @@ public class DetailActivity extends Activity implements View.OnClickListener
     }
 
 
-
     public void clickEvent()
     {
         btFirst.setOnClickListener(this);
@@ -148,9 +146,9 @@ public class DetailActivity extends Activity implements View.OnClickListener
         bZomOut.setOnClickListener(this);
     }
 
-    private void getSource()
+    private void getSource(int currentPosition)
     {
-        Uri uri = Uri.parse("android.resource://com.example.WorshipDocument/raw/_01");
+        Uri uri = Uri.parse("android.resource://com.example.WorshipDocument/raw/_0" + currentPosition);
         mediaPlayer = MediaPlayer.create(this, uri);
     }
 
@@ -167,28 +165,28 @@ public class DetailActivity extends Activity implements View.OnClickListener
             case R.id.detail_layout_btFirst:
                 viewPager.setCurrentItem(0);
                 currentPosition = 0;
+                reloadResource();
                 break;
             case R.id.detail_layout_btLast:
                 viewPager.setCurrentItem(25);
                 currentPosition = 25;
+                reloadResource();
                 break;
             case R.id.detail_layout_btPrevious:
-                if(currentPosition >=1)
+                if (currentPosition >= 1)
                 {
-                    currentPosition = currentPosition-1;
+                    currentPosition = currentPosition - 1;
                     viewPager.setCurrentItem(currentPosition);
-
                 }
-
+                reloadResource();
                 break;
             case R.id.detail_layout_btNext:
-                if(currentPosition <= 25)
+                if (currentPosition <= 25)
                 {
-                    currentPosition = currentPosition+1;
+                    currentPosition = currentPosition + 1;
                     viewPager.setCurrentItem(currentPosition);
-
                 }
-
+                reloadResource();
                 break;
             case R.id.detail_layout_btZom_In:
                 break;
@@ -216,6 +214,14 @@ public class DetailActivity extends Activity implements View.OnClickListener
                 break;
 
         }
+    }
+
+    private void reloadResource()
+    {
+        mediaPlayer.stop();
+        mediaPlayer.seekTo(0);
+        getSource(currentPosition + 1);
+        getTimeOfRecordAndShow();
     }
 
     public void startPlayProgressUpdater()
