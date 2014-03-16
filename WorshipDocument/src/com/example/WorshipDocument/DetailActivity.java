@@ -23,13 +23,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 
 import java.io.*;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -163,7 +161,29 @@ public class DetailActivity extends Activity implements View.OnClickListener
 
     private void getSource(int currentPosition)
     {
-        Uri uri = Uri.parse("android.resource://com.example.WorshipDocument/raw/_0" + currentPosition);
+        Uri uri = null;
+        if (flag.equals("flag_1"))
+        {
+            if (currentPosition < 10)
+            {
+                uri = Uri.parse("android.resource://com.example.WorshipDocument/raw/_0" + currentPosition);
+            }
+            else
+            {
+                uri = Uri.parse("android.resource://com.example.WorshipDocument/raw/_" + currentPosition);
+            }
+        }
+        else if (flag.equals("flag_2"))
+        {
+            if (currentPosition < 10)
+            {
+                uri = Uri.parse("android.resource://com.example.WorshipDocument/raw/_a0" + currentPosition);
+            }
+            else
+            {
+                uri = Uri.parse("android.resource://com.example.WorshipDocument/raw/_a" + currentPosition);
+            }
+        }
         Log.e("DetailActivity", "===>" + uri.toString());
         mediaPlayer = MediaPlayer.create(this, uri);
     }
@@ -247,19 +267,12 @@ public class DetailActivity extends Activity implements View.OnClickListener
         {
             filePath = "/mnt/sdcard/" + currentPosition + ".png";
         }
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        Uri uri = Uri.parse("file://" + filePath);
 
-        Intent i = new Intent(Intent.ACTION_SEND, Uri.parse("content://com.android.contacts/data/"));
-        i.setType("image/jpeg");
-        i.setPackage("com.whatsapp");           // so that only Whatsapp reacts and not the chooser
-        i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(filePath)));
-//        i.putExtra(Intent.EXTRA_TEXT, "I'm the body.");
-        startActivity(i);
-//        Intent whatsApp = new Intent(Intent.ACTION_SEND);
-//        whatsApp.setType("image/jpeg");
-//        whatsApp.setPackage("com.whatsapp");
-//        whatsApp.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(filePath)));
-//        startActivity(Intent.createChooser(whatsApp, "Test"));
-//        startActivity(whatsApp);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+        shareIntent.setType("image/plain");
+        startActivity(shareIntent);
     }
 
     private void shareOnFacebook(int currentPosition)
@@ -331,21 +344,12 @@ public class DetailActivity extends Activity implements View.OnClickListener
 
     private void createFileForShare() throws FileNotFoundException
     {
-        // set the path where we want to save the file
         File SDCardRoot = Environment.getExternalStorageDirectory();
-        // create a new file, to save the downloaded file
         File file = new File(SDCardRoot, "_1.pdf");
-//        FileOutputStream fileOutput = new FileOutputStream(file);
-//        String path = "file:///android_asset/" + "_1.pdf";;
         PdfWriter pdfWriter = null;
-
-        //create a new document
         Document document = new Document();
-
         try
         {
-
-            //get Instance of the PDFWriter
             pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(file));
 
             //document header attributes

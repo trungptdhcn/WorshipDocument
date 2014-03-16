@@ -17,7 +17,10 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,7 +120,7 @@ public class ViewPagerAdapter extends PagerAdapter
         try
         {
             String[] fileList = context.getAssets().list(dirFromHtml);
-            List<String> listFileImage = assetFiles;
+            List<String> listFileImage = listBitmap(dirFromImage);
             if (fileList != null && listFileImage != null)
             {
                 for (int i = 0; i <= fileList.length - 1; i++)
@@ -151,6 +154,25 @@ public class ViewPagerAdapter extends PagerAdapter
         return contentDetails;
     }
 
+    private List<String> listBitmap(String dirFrom)
+    {
+        try
+        {
+            String[] fileList = context.getAssets().list(dirFrom);
+            if (fileList != null)
+            {
+                for (int i = 0; i <= fileList.length - 1; i++)
+                {
+                    assetFiles.add("assets://" + dirFrom + "/" + fileList[i]);
+                }
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return assetFiles;
+    }
 
     private void copyStream(InputStream is, OutputStream os)
     {
