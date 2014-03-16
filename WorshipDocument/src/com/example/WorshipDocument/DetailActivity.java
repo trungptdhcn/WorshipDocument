@@ -33,14 +33,14 @@ public class DetailActivity extends Activity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_layout);
         viewPager = (ViewPager) findViewById(R.id.myfivepanelpager);
-        btFirst = (ImageView)findViewById(R.id.detail_layout_btFirst);
-        btLast = (ImageView)findViewById(R.id.detail_layout_btLast);
-        btPrevious = (ImageView)findViewById(R.id.detail_layout_btPrevious);
-        btNext = (ImageView)findViewById(R.id.detail_layout_btNext);
-        btHome = (ImageView)findViewById(R.id.detail_layout_btHome);
-        btCopy = (ImageView)findViewById(R.id.detail_layout_btCopy);
-        btZomIn = (ImageView)findViewById(R.id.detail_layout_btZom_In);
-        bZomOut = (ImageView)findViewById(R.id.detail_layout_btZom_Out);
+//        btFirst = (ImageView)findViewById(R.id.detail_layout_btFirst);
+//        btLast = (ImageView)findViewById(R.id.detail_layout_btLast);
+//        btPrevious = (ImageView)findViewById(R.id.detail_layout_btPrevious);
+//        btNext = (ImageView)findViewById(R.id.detail_layout_btNext);
+//        btHome = (ImageView)findViewById(R.id.detail_layout_btHome);
+//        btCopy = (ImageView)findViewById(R.id.detail_layout_btCopy);
+//        btZomIn = (ImageView)findViewById(R.id.detail_layout_btZom_In);
+//        bZomOut = (ImageView)findViewById(R.id.detail_layout_btZom_Out);
 
         viewPagerAdapter = new ViewPagerAdapter(this, "html_1","image_1");
         viewPager.setAdapter(viewPagerAdapter);
@@ -54,20 +54,20 @@ public class DetailActivity extends Activity implements View.OnClickListener
             currentPosition = position;
         }
         viewPager.setCurrentItem(currentPosition);
-        clickEvent();
+//        clickEvent();
 
     }
-    public void clickEvent()
-    {
-        btFirst.setOnClickListener(this);
-        btLast.setOnClickListener(this);
-        btPrevious.setOnClickListener(this);
-        btNext.setOnClickListener(this);
-        btHome.setOnClickListener(this);
-        btCopy.setOnClickListener(this);
-        btZomIn.setOnClickListener(this);
-        bZomOut.setOnClickListener(this);
-    }
+//    public void clickEvent()
+//    {
+//        btFirst.setOnClickListener(this);
+//        btLast.setOnClickListener(this);
+//        btPrevious.setOnClickListener(this);
+//        btNext.setOnClickListener(this);
+//        btHome.setOnClickListener(this);
+//        btCopy.setOnClickListener(this);
+//        btZomIn.setOnClickListener(this);
+//        bZomOut.setOnClickListener(this);
+//    }
 
     @Override
     public void onClick(View view)
