@@ -2,15 +2,16 @@ package com.example.WorshipDocument;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.PointF;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -76,10 +77,33 @@ public class ViewPagerAdapter extends PagerAdapter
         view = inflater.inflate(R.layout.detail_item, null);
         ((ViewPager) container).addView(view, 0);
         imageLoader.init(ImageLoaderConfiguration.createDefault(context));
-        JellyBeanSpanFixTextView tvContent = (JellyBeanSpanFixTextView) view.findViewById(R.id.detail_item_tvContent);
+        final RelativeLayout relativeLayoutContainer = (RelativeLayout)view.findViewById(R.id.detail_item_rlContainerContent);
+        ImageView ivZomIn = (ImageView)view.findViewById(R.id.detail_item_btZom_in);
+        ImageView ivZomOut = (ImageView)view.findViewById(R.id.detail_item_btZom_out);
+        WebView webView  = (WebView)view.findViewById(R.id.detail_item_wvContent);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setSupportZoom(true);
+        final String mimeType = "text/html";
+        final String encoding = "UTF-8";
+        webView.loadDataWithBaseURL("",contentDetailList.get(position).getContent(),mimeType, encoding, "");
+        ivZomIn.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                zoom(relativeLayoutContainer,2f,2f,new PointF(0,0));
+            }
+        });
+        ivZomOut.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                zoom(relativeLayoutContainer,0.5f,0.5f,new PointF(0,0));
+            }
+        });
         ImageView ivImage = (ImageView) view.findViewById(R.id.detail_item_ivImage);
         imageLoader.displayImage(contentDetailList.get(position).getFileImage(), ivImage, options);
-        tvContent.setText(Html.fromHtml(contentDetailList.get(position).getContent()));
 
         return view;
     }
@@ -114,11 +138,6 @@ public class ViewPagerAdapter extends PagerAdapter
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-//                    int size = stream.available();
-//                    byte[] buffer = new byte[size];
-//                    stream.read(buffer);
-//                    stream.close();
-//                    tContents = new String(buffer);
                     contentDetail.setContent(t);
                     contentDetail.setFileImage(listFileImage.get(i));
                     contentDetails.add(contentDetail);
@@ -149,6 +168,14 @@ public class ViewPagerAdapter extends PagerAdapter
             }
         }
         catch(Exception ex){}
+    }
+
+    public void zoom(RelativeLayout view,Float scaleX, Float scaleY, PointF pivot)
+    {
+        view.setPivotX(pivot.x);
+        view.setPivotY(pivot.y);
+        view.setScaleX(scaleX);
+        view.setScaleY(scaleY);
     }
 
 //    private List<String> listBitmap(String dirFrom)

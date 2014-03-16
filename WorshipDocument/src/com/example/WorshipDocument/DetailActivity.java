@@ -43,8 +43,6 @@ public class DetailActivity extends Activity implements View.OnClickListener
     private ImageView btNext;
     private ImageView btHome;
     private ImageView btCopy;
-    private ImageView btZomIn;
-    private ImageView bZomOut;
     int currentPosition;
 
     public void onCreate(Bundle savedInstanceState)
@@ -58,8 +56,6 @@ public class DetailActivity extends Activity implements View.OnClickListener
         btNext = (ImageView) findViewById(R.id.detail_layout_btNext);
         btHome = (ImageView) findViewById(R.id.detail_layout_btHome);
         btCopy = (ImageView) findViewById(R.id.detail_layout_btCopy);
-        btZomIn = (ImageView) findViewById(R.id.detail_layout_btZom_In);
-        bZomOut = (ImageView) findViewById(R.id.detail_layout_btZom_Out);
 
         audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         btPlayOrStop = (ImageView) findViewById(R.id.ivPlayOrStop);
@@ -67,6 +63,7 @@ public class DetailActivity extends Activity implements View.OnClickListener
         tvTimePlay = (TextView) findViewById(R.id.program_tvTimePlay);
         sbTime = (SeekBar) findViewById(R.id.program_sbTime);
 
+        viewPagerAdapter = new ViewPagerAdapter(this, "html_1", "image_1");
         viewPagerAdapter = new ViewPagerAdapter(this, "html_1", "image_1");
         viewPager.setAdapter(viewPagerAdapter);
         int position = getIntent().getIntExtra("current_image", -1);
@@ -134,6 +131,7 @@ public class DetailActivity extends Activity implements View.OnClickListener
     }
 
 
+
     public void clickEvent()
     {
         btFirst.setOnClickListener(this);
@@ -142,8 +140,6 @@ public class DetailActivity extends Activity implements View.OnClickListener
         btNext.setOnClickListener(this);
         btHome.setOnClickListener(this);
         btCopy.setOnClickListener(this);
-        btZomIn.setOnClickListener(this);
-        bZomOut.setOnClickListener(this);
     }
 
     private void getSource(int currentPosition)
@@ -173,12 +169,13 @@ public class DetailActivity extends Activity implements View.OnClickListener
                 reloadResource();
                 break;
             case R.id.detail_layout_btPrevious:
-                if (currentPosition >= 1)
+                if(currentPosition >=1)
                 {
-                    currentPosition = currentPosition - 1;
+                    currentPosition = currentPosition-1;
                     viewPager.setCurrentItem(currentPosition);
+
                 }
-                reloadResource();
+
                 break;
             case R.id.detail_layout_btNext:
                 if (currentPosition <= 25)
@@ -186,11 +183,8 @@ public class DetailActivity extends Activity implements View.OnClickListener
                     currentPosition = currentPosition + 1;
                     viewPager.setCurrentItem(currentPosition);
                 }
+
                 reloadResource();
-                break;
-            case R.id.detail_layout_btZom_In:
-                break;
-            case R.id.detail_layout_btZom_Out:
                 break;
             case R.id.ivPlayOrStop:
                 if (!mediaPlayer.isPlaying())
