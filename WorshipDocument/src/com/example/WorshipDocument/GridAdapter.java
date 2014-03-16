@@ -81,22 +81,21 @@ public class GridAdapter extends BaseAdapter
 
     private List<String> listBitmap(String dirFrom)
     {
-        List<String> assetFiles = new ArrayList<String>();
         try
         {
             String[] fileList = mContext.getAssets().list(dirFrom);
             if (fileList != null)
             {
-                for (int i = 0; i < fileList.length; i++)
+                for (int i = 0; i <= fileList.length -1; i++)
                 {
-                    assetFiles.add("assets://"+dirFrom + "/"+fileList[i]);
+                    ViewPagerAdapter.assetFiles.add("assets://"+dirFrom + "/"+fileList[i]);
                 }
             }
         }
         catch (IOException e)
         {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
-        return assetFiles;
+        return ViewPagerAdapter.assetFiles;
     }
 }

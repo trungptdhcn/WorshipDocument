@@ -1,10 +1,18 @@
 package com.example.WorshipDocument;
 
 import android.app.Activity;
+import android.content.Context;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.ViewPager;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,6 +23,18 @@ import android.widget.ImageView;
  */
 public class DetailActivity extends Activity implements View.OnClickListener
 {
+    private int mediaDuration;
+    private int mediaPosition;
+    private AudioManager audioManager = null;
+    private SeekBar sbVolume;
+    private SeekBar sbTime;
+    private ImageView btPlayOrStop;
+    private TextView tvTimeCur;
+    private TextView tvTimePlay;
+    private MediaPlayer mediaPlayer;
+    private final Handler handler = new Handler();
+
+
     private ViewPagerAdapter viewPagerAdapter;
     private ViewPager viewPager;
     private ImageView ivImage;
@@ -33,14 +53,33 @@ public class DetailActivity extends Activity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_layout);
         viewPager = (ViewPager) findViewById(R.id.myfivepanelpager);
-//        btFirst = (ImageView)findViewById(R.id.detail_layout_btFirst);
-//        btLast = (ImageView)findViewById(R.id.detail_layout_btLast);
-//        btPrevious = (ImageView)findViewById(R.id.detail_layout_btPrevious);
-//        btNext = (ImageView)findViewById(R.id.detail_layout_btNext);
-//        btHome = (ImageView)findViewById(R.id.detail_layout_btHome);
-//        btCopy = (ImageView)findViewById(R.id.detail_layout_btCopy);
-//        btZomIn = (ImageView)findViewById(R.id.detail_layout_btZom_In);
-//        bZomOut = (ImageView)findViewById(R.id.detail_layout_btZom_Out);
+        btFirst = (ImageView)findViewById(R.id.detail_layout_btFirst);
+        btLast = (ImageView)findViewById(R.id.detail_layout_btLast);
+        btPrevious = (ImageView)findViewById(R.id.detail_layout_btPrevious);
+        btNext = (ImageView)findViewById(R.id.detail_layout_btNext);
+        btHome = (ImageView)findViewById(R.id.detail_layout_btHome);
+        btCopy = (ImageView)findViewById(R.id.detail_layout_btCopy);
+        btZomIn = (ImageView)findViewById(R.id.detail_layout_btZom_In);
+        bZomOut = (ImageView)findViewById(R.id.detail_layout_btZom_Out);
+
+        audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+        btPlayOrStop = (ImageView) findViewById(R.id.ivPlayOrStop);
+        tvTimeCur = (TextView) findViewById(R.id.program_tvTimeCur);
+        tvTimePlay = (TextView) findViewById(R.id.program_tvTimePlay);
+        sbTime = (SeekBar) findViewById(R.id.program_sbTime);
+        getSource();
+        this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        getTimeOfRecordAndShow();
+        btPlayOrStop.setOnClickListener(this);
+        sbTime.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                seekChange(v);
+                return false;
+            }
+        });
 
         viewPagerAdapter = new ViewPagerAdapter(this, "html_1","image_1");
         viewPager.setAdapter(viewPagerAdapter);
@@ -54,20 +93,66 @@ public class DetailActivity extends Activity implements View.OnClickListener
             currentPosition = position;
         }
         viewPager.setCurrentItem(currentPosition);
-//        clickEvent();
+        clickEvent();
 
     }
-//    public void clickEvent()
-//    {
-//        btFirst.setOnClickListener(this);
-//        btLast.setOnClickListener(this);
-//        btPrevious.setOnClickListener(this);
-//        btNext.setOnClickListener(this);
-//        btHome.setOnClickListener(this);
-//        btCopy.setOnClickListener(this);
-//        btZomIn.setOnClickListener(this);
-//        bZomOut.setOnClickListener(this);
-//    }
+
+    private void seekChange(View v)
+    {
+        if (mediaPlayer.isPlaying())
+        {
+            SeekBar sb = (SeekBar) v;
+            mediaPlayer.seekTo(sb.getProgress());
+        }
+    }
+
+
+    private void getTimeOfRecordAndShow()
+    {
+        mediaDuration = mediaPlayer.getDuration();
+        mediaPosition = mediaPlayer.getCurrentPosition();
+
+        tvTimeCur.setText(getTimeString(mediaPosition));
+        tvTimePlay.setText(getTimeString(mediaDuration));
+    }
+
+    private String getTimeString(long millis)
+    {
+        StringBuffer buf = new StringBuffer();
+
+        //int hours = (int) (millis / (1000 * 60 * 60));
+        int minutes = (int) ((millis % (1000 * 60 * 60)) / (1000 * 60));
+        int seconds = (int) (((millis % (1000 * 60 * 60)) % (1000 * 60)) / 1000);
+
+        buf
+                //.append(String.format("%02d", hours))
+                //.append(":")
+                .append(String.format("%01d", minutes))
+                .append(":")
+                .append(String.format("%02d", seconds));
+
+        return buf.toString();
+    }
+
+
+
+    public void clickEvent()
+    {
+        btFirst.setOnClickListener(this);
+        btLast.setOnClickListener(this);
+        btPrevious.setOnClickListener(this);
+        btNext.setOnClickListener(this);
+        btHome.setOnClickListener(this);
+        btCopy.setOnClickListener(this);
+        btZomIn.setOnClickListener(this);
+        bZomOut.setOnClickListener(this);
+    }
+
+    private void getSource()
+    {
+        Uri uri = Uri.parse("android.resource://com.example.WorshipDocument/raw/_01");
+        mediaPlayer = MediaPlayer.create(this, uri);
+    }
 
     @Override
     public void onClick(View view)
@@ -109,7 +194,59 @@ public class DetailActivity extends Activity implements View.OnClickListener
                 break;
             case R.id.detail_layout_btZom_Out:
                 break;
+            case R.id.ivPlayOrStop:
+                if (!mediaPlayer.isPlaying())
+                {
+                    btPlayOrStop.setBackgroundDrawable(getResources().getDrawable(R.drawable.content_bt_play));
+                    try
+                    {
+                        mediaPlayer.start();
+                        startPlayProgressUpdater();
+                    }
+                    catch (IllegalStateException e)
+                    {
+                        mediaPlayer.pause();
+                    }
+                }
+                else
+                {
+                    mediaPlayer.pause();
+                    btPlayOrStop.setBackgroundDrawable(getResources().getDrawable(R.drawable.content_bt_pause));
+                }
+                break;
 
         }
     }
+
+    public void startPlayProgressUpdater()
+    {
+        getTimeOfRecordAndShow();
+        sbTime.setProgress(mediaPosition);
+        sbTime.setMax(mediaDuration);
+        if (mediaPlayer.isPlaying())
+        {
+            Runnable notification = new Runnable()
+            {
+                public void run()
+                {
+                    startPlayProgressUpdater();
+                }
+            };
+            handler.postDelayed(notification, 1000);
+        }
+        else
+        {
+            mediaPlayer.pause();
+            btPlayOrStop.setBackgroundDrawable(getResources().getDrawable(R.drawable.content_bt_pause));
+            if (mediaPosition == mediaDuration)
+            {
+                sbTime.setProgress(0);
+            }
+            else
+            {
+                sbTime.setProgress(mediaPosition);
+            }
+        }
+    }
+
 }

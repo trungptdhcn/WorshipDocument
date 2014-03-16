@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">WorshipDocument</string>
+    <string name="program_timeCurPlay">1:68</string>
+    <string name="program_timePlay">4:86</string>
 </resources>
