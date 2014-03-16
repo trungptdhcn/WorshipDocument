@@ -17,10 +17,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,10 +42,10 @@ public class ViewPagerAdapter extends PagerAdapter
         this.context = context;
         this.contentDetailList = getContentDetailList(dirFromHtml, dirFromImage);
         options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.ic_launcher)
-                .showImageForEmptyUri(R.drawable.ic_launcher)
-                .showImageOnFail(R.drawable.ic_launcher)
-//                .cacheInMemory(true)
+                .showImageOnLoading(R.drawable.content_image_thumnail_background)
+                .showImageForEmptyUri(R.drawable.content_image_thumnail_background)
+                .showImageOnFail(R.drawable.content_image_thumnail_background)
+                .cacheInMemory(true)
                 .cacheOnDisc(true)
                 .considerExifParams(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
@@ -83,9 +80,8 @@ public class ViewPagerAdapter extends PagerAdapter
         final WebView webView = (WebView) view.findViewById(R.id.detail_item_wvContent);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setSupportZoom(true);
-        final String mimeType = "text/html";
-        final String encoding = "UTF-8";
-        webView.loadDataWithBaseURL("", contentDetailList.get(position).getContent(), mimeType, encoding, "");
+        webView.getSettings().setDefaultTextEncodingName("utf-8");
+        webView.loadDataWithBaseURL(null, contentDetailList.get(position).getContent(), "text/html", "utf-8", null);
         ivZomIn.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -185,24 +181,4 @@ public class ViewPagerAdapter extends PagerAdapter
         view.setScaleY(scaleY);
     }
 
-//    private List<String> listBitmap(String dirFrom)
-//    {
-//
-//        try
-//        {
-//            String[] fileList = context.getAssets().list(dirFrom);
-//            if (fileList != null)
-//            {
-//                for (int i = 0; i <= fileList.length -1 ; i++)
-//                {
-//                    assetFiles.add("assets://"+dirFrom + "/"+fileList[i]);
-//                }
-//            }
-//        }
-//        catch (IOException e)
-//        {
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//        }
-//        return assetFiles;
-//    }
 }

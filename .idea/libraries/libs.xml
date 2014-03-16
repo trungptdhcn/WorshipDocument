@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="libs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/WorshipDocument/libs/itextpdf-5.4.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WorshipDocument/libs/xmlworker-5.5.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WorshipDocument/libs/universal-image-loader-1.9.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

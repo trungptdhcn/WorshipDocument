@@ -14,7 +14,18 @@
                 android:orientation="horizontal"
                 android:background="@drawable/toptitle"
                 android:layout_alignParentTop="true"
+                android:gravity="center"
                 android:id="@+id/linearLayout">
+            <TextView
+                    android:id="@+id/content_layout_tvTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Praying Guide"
+                    android:textColor="@color/color_while"
+                    android:textStyle="bold"
+                    android:textSize="24dp"
+                    />
         </LinearLayout>
 
         <RelativeLayout

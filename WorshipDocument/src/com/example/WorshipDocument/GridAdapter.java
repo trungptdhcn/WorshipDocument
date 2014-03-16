@@ -38,9 +38,9 @@ public class GridAdapter extends BaseAdapter
         this.dirFrom = dirFrom;
         this.bitmapsFiles = listBitmap(dirFrom);
         options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.ic_launcher)
-                .showImageForEmptyUri(R.drawable.ic_launcher)
-                .showImageOnFail(R.drawable.ic_launcher)
+                .showImageOnLoading(R.drawable.content_image_thumnail_background)
+                .showImageForEmptyUri(R.drawable.content_image_thumnail_background)
+                .showImageOnFail(R.drawable.content_image_thumnail_background)
                 .cacheInMemory(true)
                 .cacheOnDisc(true)
                 .considerExifParams(true)
