@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class ViewPagerAdapter extends PagerAdapter
 {
-    private Context context;
+    public static Context context;
     private List<ContentDetail> contentDetailList = new ArrayList<ContentDetail>();
     protected ImageLoader imageLoader = ImageLoader.getInstance();
     DisplayImageOptions options;
@@ -203,4 +203,14 @@ public class ViewPagerAdapter extends PagerAdapter
         view.setScaleY(scaleY);
     }
 
+
+    public List<String> getAssetFiles()
+    {
+        return assetFiles;
+    }
+
+    public void setAssetFiles(List<String> assetFiles)
+    {
+        this.assetFiles = assetFiles;
+    }
 }

@@ -16,7 +16,7 @@ import android.widget.ImageView;
 public class MainActivity extends Activity
 {
     private ImageView btOne;
-    private ImageView btTwo;
+    private ImageView btTwo, btAbout;
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -24,13 +24,14 @@ public class MainActivity extends Activity
         setContentView(R.layout.main_layout);
         btOne = (ImageView) findViewById(R.id.main_layout_bt1);
         btTwo = (ImageView) findViewById(R.id.main_layout_bt2);
+        btAbout = (ImageView) findViewById(R.id.main_layout_bt4);
         btOne.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
                 Intent i = new Intent(getApplicationContext(), ContentActivity.class);
-                i.putExtra("flag","flag_1") ;
+                i.putExtra("flag", "flag_1");
                 startActivity(i);
 
             }
@@ -40,8 +41,18 @@ public class MainActivity extends Activity
             @Override
             public void onClick(View view)
             {
-                Intent intent = new Intent(getApplicationContext(),ContentActivity.class);
-                intent.putExtra("flag","flag_2") ;
+                Intent intent = new Intent(getApplicationContext(), ContentActivity.class);
+                intent.putExtra("flag", "flag_2");
+                startActivity(intent);
+            }
+        });
+
+        btAbout.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(getApplicationContext(), AboutActivity.class);
                 startActivity(intent);
             }
         });

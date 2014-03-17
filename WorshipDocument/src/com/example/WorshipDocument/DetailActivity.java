@@ -66,7 +66,14 @@ public class DetailActivity extends Activity implements View.OnClickListener
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_layout);
-        copyAssets();
+        try
+        {
+            copyAssets();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
         viewPager = (ViewPager) findViewById(R.id.myfivepanelpager);
         btPrevious = (ImageView) findViewById(R.id.detail_layout_btPrevious);
         btNext = (ImageView) findViewById(R.id.detail_layout_btNext);
@@ -199,7 +206,7 @@ public class DetailActivity extends Activity implements View.OnClickListener
                 finish();
                 break;
             case R.id.detail_layout_btCopy:
-                finish();
+//                finish();
                 break;
             case R.id.detail_layout_btPrevious:
                 if (currentPosition >= 1)
@@ -247,9 +254,9 @@ public class DetailActivity extends Activity implements View.OnClickListener
 //                {
 //                    createFileForShare();
 //                }
-//                catch (FileNotFoundException e)
+//                catch (IOException e)
 //                {
-//                    Log.e("DetailActivity", "===>" + e.getMessage());
+//                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 //                }
                 break;
 
@@ -342,8 +349,9 @@ public class DetailActivity extends Activity implements View.OnClickListener
         }
     }
 
-    private void createFileForShare() throws FileNotFoundException
+    private void createFileForShare() throws IOException
     {
+        String[] fileList = ViewPagerAdapter.context.getAssets().list("html_1");
         File SDCardRoot = Environment.getExternalStorageDirectory();
         File file = new File(SDCardRoot, "_1.pdf");
         PdfWriter pdfWriter = null;
@@ -367,11 +375,12 @@ public class DetailActivity extends Activity implements View.OnClickListener
 
             //To convert a HTML file from the filesystem
 //            String File_To_Convert = "docs/SamplePDF.html";
-            AssetManager assetManager = this.getResources().getAssets();
-            InputStream inputStream = null;
-            inputStream = assetManager.open("_1.htm");
+//            AssetManager assetManager = this.getResources().getAssets();
+//            InputStream inputStream = null;
+//            inputStream = assetManager.open("_1.htm");
 //            Uri uriFileHTML = Uri.parse("file:///android_asset/");
-//            String File_To_Convert = uriFileHTML.getPath() + "_1.html";
+//            InputStream stream = context.getAssets().open(dirFromHtml + "/" + fileList[i]);
+//            String File_To_Convert = fileList.get;
 //            FileInputStream fis = new FileInputStream(File_To_Convert);
 
             //URL for HTML page
@@ -381,7 +390,7 @@ public class DetailActivity extends Activity implements View.OnClickListener
             //get the XMLWorkerHelper Instance
             XMLWorkerHelper worker = XMLWorkerHelper.getInstance();
             //convert to PDF
-            worker.parseXHtml(pdfWriter, document, inputStream);
+//            worker.parseXHtml(pdfWriter, document, inputStream);
 
             //close the document
             document.close();
@@ -437,8 +446,14 @@ public class DetailActivity extends Activity implements View.OnClickListener
     }
 
 
-    private void copyAssets()
+    private void copyAssets() throws IOException
     {
+        String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Praying Guide";
+        File dir = new File(filePath);
+        if (!dir.exists())
+        {
+            dir.mkdirs();
+        }
         AssetManager assetManager = getAssets();
         String[] files = null;
         try
@@ -456,9 +471,8 @@ public class DetailActivity extends Activity implements View.OnClickListener
             try
             {
                 in = assetManager.open(filename);
-                File SDCardRoot = Environment.getExternalStorageDirectory();
                 // create a new file, to save the downloaded file
-                File outFile = new File(SDCardRoot, filename);
+                File outFile = new File(dir, filename);
                 Log.e("DetailActivity", "===>" + outFile.getAbsolutePath());
                 out = new FileOutputStream(outFile);
                 copyFile(in, out);

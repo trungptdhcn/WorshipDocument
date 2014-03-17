@@ -16,11 +16,14 @@
             </intent-filter>
         </activity>
         <!--<activity android:name=".MainActivity"-->
-                  <!--android:screenOrientation="portrait"/>-->
+        <!--android:screenOrientation="portrait"/>-->
         <activity android:name=".ContentActivity"
                   android:theme="@android:style/Theme.NoTitleBar"
                   android:screenOrientation="portrait"/>
         <activity android:name=".DetailActivity"
+                  android:theme="@android:style/Theme.NoTitleBar"
+                  android:screenOrientation="portrait"/>
+        <activity android:name=".AboutActivity"
                   android:theme="@android:style/Theme.NoTitleBar"
                   android:screenOrientation="portrait"/>
         <!--<activity android:name=".ContentActivity2"/>-->
