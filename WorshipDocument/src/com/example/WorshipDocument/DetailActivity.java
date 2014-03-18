@@ -58,6 +58,7 @@ public class DetailActivity extends Activity implements View.OnClickListener
     private ImageView btPrevious;
     private ImageView btNext;
     private ImageView btHome;
+    private ImageView btCopy;
     int currentPosition;
     String flag;
 
@@ -343,8 +344,9 @@ public class DetailActivity extends Activity implements View.OnClickListener
         }
     }
 
-    private void createFileForShare() throws FileNotFoundException
+    private void createFileForShare() throws IOException
     {
+        String[] fileList = ViewPagerAdapter.context.getAssets().list("html_1");
         File SDCardRoot = Environment.getExternalStorageDirectory();
         File file = new File(SDCardRoot, "_1.pdf");
         PdfWriter pdfWriter = null;
@@ -368,11 +370,12 @@ public class DetailActivity extends Activity implements View.OnClickListener
 
             //To convert a HTML file from the filesystem
 //            String File_To_Convert = "docs/SamplePDF.html";
-            AssetManager assetManager = this.getResources().getAssets();
-            InputStream inputStream = null;
-            inputStream = assetManager.open("_1.htm");
+//            AssetManager assetManager = this.getResources().getAssets();
+//            InputStream inputStream = null;
+//            inputStream = assetManager.open("_1.htm");
 //            Uri uriFileHTML = Uri.parse("file:///android_asset/");
-//            String File_To_Convert = uriFileHTML.getPath() + "_1.html";
+//            InputStream stream = context.getAssets().open(dirFromHtml + "/" + fileList[i]);
+//            String File_To_Convert = fileList.get;
 //            FileInputStream fis = new FileInputStream(File_To_Convert);
 
             //URL for HTML page
@@ -382,7 +385,7 @@ public class DetailActivity extends Activity implements View.OnClickListener
             //get the XMLWorkerHelper Instance
             XMLWorkerHelper worker = XMLWorkerHelper.getInstance();
             //convert to PDF
-            worker.parseXHtml(pdfWriter, document, inputStream);
+//            worker.parseXHtml(pdfWriter, document, inputStream);
 
             //close the document
             document.close();

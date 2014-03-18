@@ -1,11 +1,10 @@
 package com.example.WorshipDocument;
 
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.PointF;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +69,7 @@ public class ViewPagerAdapter extends PagerAdapter
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, final int position)
+    public Object instantiateItem(ViewGroup container, int position)
     {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -108,10 +107,8 @@ public class ViewPagerAdapter extends PagerAdapter
         });
 
         ImageView ivImage = (ImageView) view.findViewById(R.id.detail_item_ivImage);
-        if (contentDetailList.get(position).getFileImage() != null && !contentDetailList.get(position).getFileImage().equals(""))
-        {
-            imageLoader.displayImage(contentDetailList.get(position).getFileImage(), ivImage, options);
-        }
+        imageLoader.displayImage(contentDetailList.get(position).getFileImage(), ivImage, options);
+
         return view;
     }
 
@@ -149,7 +146,6 @@ public class ViewPagerAdapter extends PagerAdapter
                         e.printStackTrace();
                     }
                     contentDetail.setContent(t);
-                    if(listFileImage != null && listFileImage.size() > 0 && listFileImage.get(i) != null)
                     contentDetail.setFileImage(listFileImage.get(i));
                     contentDetails.add(contentDetail);
                 }
@@ -166,22 +162,14 @@ public class ViewPagerAdapter extends PagerAdapter
     {
         try
         {
-            if (dirFrom != null && !dirFrom.equals(""))
+            String[] fileList = context.getAssets().list(dirFrom);
+            if (fileList != null)
             {
-                String[] fileList = context.getAssets().list(dirFrom);
-                if (fileList != null)
+                for (int i = 0; i <= fileList.length - 1; i++)
                 {
-                    for (int i = 0; i <= fileList.length - 1; i++)
-                    {
-                        assetFiles.add("assets://" + dirFrom + "/" + fileList[i]);
-                    }
+                    assetFiles.add("assets://" + dirFrom + "/" + fileList[i]);
                 }
             }
-            else
-            {
-
-            }
-
         }
         catch (IOException e)
         {
@@ -211,24 +199,12 @@ public class ViewPagerAdapter extends PagerAdapter
         }
     }
 
-    public void startTextSelection(WebView webView)
+    public void zoom(RelativeLayout view, Float scaleX, Float scaleY, PointF pivot)
     {
-        try
-        {
-            WebView.class.getMethod("selectText").invoke(this);
-        }
-        catch (Exception e)
-        {
-            try
-            {
-                WebView.class.getMethod("emulateShiftHeld").invoke(this);
-            }
-            catch (Exception e1)
-            {
-                KeyEvent shiftPressEvent = new KeyEvent(0, 0,
-                        KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
-                shiftPressEvent.dispatch(webView);
-            }
-        }
+        view.setPivotX(pivot.x);
+        view.setPivotY(pivot.y);
+        view.setScaleX(scaleX);
+        view.setScaleY(scaleY);
     }
+
 }
