@@ -23,6 +23,7 @@
         <activity android:name=".DetailActivity"
                   android:theme="@android:style/Theme.NoTitleBar"
                   android:screenOrientation="portrait"/>
+        <activity android:name=".ContentActivity3"/>
         <!--<activity android:name=".ContentActivity2"/>-->
     </application>
 </manifest>

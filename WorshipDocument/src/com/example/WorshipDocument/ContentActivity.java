@@ -41,6 +41,10 @@ public class ContentActivity extends FragmentActivity
         {
             adapter = new GridAdapter(this, new ArrayList<Bitmap>(), "image_2");
         }
+        else if (flag.equals("flag_3"))
+        {
+            adapter = new GridAdapter(this, new ArrayList<Bitmap>(), "");
+        }
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {

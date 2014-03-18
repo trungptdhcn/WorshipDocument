@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
+import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -72,7 +74,17 @@ public class GridAdapter extends BaseAdapter
     public View getView(int position, View view, ViewGroup viewGroup)
     {
         ImageView imageView = new ImageView(mContext);
-        imageLoader.init(ImageLoaderConfiguration.createDefault(mContext));
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(mContext)
+                .memoryCacheExtraOptions(480, 800)
+                        // Can slow ImageLoader, use it carefully (Better don't use it)
+                .threadPoolSize(5)
+                .threadPriority(Thread.MIN_PRIORITY + 2)
+                .denyCacheImageMultipleSizesInMemory()
+                .memoryCache(new UsingFreqLimitedMemoryCache(2 * 1024 * 1024))
+                .discCacheFileNameGenerator(new HashCodeFileNameGenerator())
+                .defaultDisplayImageOptions(DisplayImageOptions.createSimple()).build();
+        imageLoader.init(config);
+//        imageLoader.init(ImageLoaderConfiguration.createDefault(mContext));
         imageLoader.displayImage(bitmapsFiles.get(position), imageView, options);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         imageView.setLayoutParams(new GridView.LayoutParams(150, 250));

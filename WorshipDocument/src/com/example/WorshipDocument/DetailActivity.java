@@ -58,7 +58,6 @@ public class DetailActivity extends Activity implements View.OnClickListener
     private ImageView btPrevious;
     private ImageView btNext;
     private ImageView btHome;
-    private ImageView btCopy;
     int currentPosition;
     String flag;
 
@@ -66,12 +65,10 @@ public class DetailActivity extends Activity implements View.OnClickListener
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_layout);
-        copyAssets();
         viewPager = (ViewPager) findViewById(R.id.myfivepanelpager);
         btPrevious = (ImageView) findViewById(R.id.detail_layout_btPrevious);
         btNext = (ImageView) findViewById(R.id.detail_layout_btNext);
         btHome = (ImageView) findViewById(R.id.detail_layout_btHome);
-        btCopy = (ImageView) findViewById(R.id.detail_layout_btCopy);
         flag = getIntent().getStringExtra("flag");
         btShare = (ImageView) findViewById(R.id.detail_layout_btShare);
 
@@ -80,15 +77,6 @@ public class DetailActivity extends Activity implements View.OnClickListener
         tvTimeCur = (TextView) findViewById(R.id.program_tvTimeCur);
         tvTimePlay = (TextView) findViewById(R.id.program_tvTimePlay);
         sbTime = (SeekBar) findViewById(R.id.program_sbTime);
-        if (flag.equals("flag_1"))
-        {
-            viewPagerAdapter = new ViewPagerAdapter(this, "html_1", "image_1");
-        }
-        else if (flag.equals("flag_2"))
-        {
-            viewPagerAdapter = new ViewPagerAdapter(this, "html_2", "image_2");
-        }
-        viewPager.setAdapter(viewPagerAdapter);
         int position = getIntent().getIntExtra("current_image", -1);
         if (position == -1)
         {
@@ -98,11 +86,28 @@ public class DetailActivity extends Activity implements View.OnClickListener
         {
             currentPosition = position;
         }
-        getSource(currentPosition + 1);
+        if (flag.equals("flag_1"))
+        {
+            viewPagerAdapter = new ViewPagerAdapter(this, "html_1", "image_1");
+            copyAssets();
+            getSource(currentPosition + 1);
+            getTimeOfRecordAndShow();
+        }
+        else if (flag.equals("flag_2"))
+        {
+            viewPagerAdapter = new ViewPagerAdapter(this, "html_2", "image_2");
+            copyAssets();
+            getSource(currentPosition + 1);
+            getTimeOfRecordAndShow();
+        }
+        else if (flag.equals("flag_3"))
+        {
+            viewPagerAdapter = new ViewPagerAdapter(this, "html_3", "");
+        }
+        viewPager.setAdapter(viewPagerAdapter);
         viewPager.setCurrentItem(currentPosition);
         clickEvent();
         this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        getTimeOfRecordAndShow();
         btPlayOrStop.setOnClickListener(this);
         sbTime.setOnTouchListener(new View.OnTouchListener()
         {
@@ -155,7 +160,6 @@ public class DetailActivity extends Activity implements View.OnClickListener
         btPrevious.setOnClickListener(this);
         btNext.setOnClickListener(this);
         btHome.setOnClickListener(this);
-        btCopy.setOnClickListener(this);
         btShare.setOnClickListener(this);
     }
 
@@ -196,9 +200,6 @@ public class DetailActivity extends Activity implements View.OnClickListener
             case R.id.detail_layout_btHome:
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
-                finish();
-                break;
-            case R.id.detail_layout_btCopy:
                 finish();
                 break;
             case R.id.detail_layout_btPrevious:
