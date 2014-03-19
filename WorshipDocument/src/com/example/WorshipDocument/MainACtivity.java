@@ -16,12 +16,9 @@ import android.widget.ImageView;
 public class MainActivity extends Activity
 {
     private ImageView btOne;
-<<<<<<< Updated upstream
-    private ImageView btTwo, btAbout;
-=======
+    private ImageView btAbout;
     private ImageView btTwo;
     private ImageView btThree;
->>>>>>> Stashed changes
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -29,11 +26,8 @@ public class MainActivity extends Activity
         setContentView(R.layout.main_layout);
         btOne = (ImageView) findViewById(R.id.main_layout_bt1);
         btTwo = (ImageView) findViewById(R.id.main_layout_bt2);
-<<<<<<< Updated upstream
+        btThree = (ImageView) findViewById(R.id.main_layout_bt3);
         btAbout = (ImageView) findViewById(R.id.main_layout_bt4);
-=======
-        btThree = (ImageView)findViewById(R.id.main_layout_bt3);
->>>>>>> Stashed changes
         btOne.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -70,8 +64,8 @@ public class MainActivity extends Activity
             @Override
             public void onClick(View view)
             {
-                Intent intent3 = new Intent(getApplicationContext(),ContentActivity3.class);
-                intent3.putExtra("flag","flag_2") ;
+                Intent intent3 = new Intent(getApplicationContext(), ContentActivity3.class);
+                intent3.putExtra("flag", "flag_2");
                 startActivity(intent3);
             }
         });

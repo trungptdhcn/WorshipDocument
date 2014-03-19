@@ -1,5 +1,6 @@
 package com.example.WorshipDocument;
 
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
@@ -44,16 +45,24 @@ public class ViewPagerAdapter extends PagerAdapter
 
         this.context = context;
         this.contentDetailList = getContentDetailList(dirFromHtml, dirFromImage);
-        options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.content_image_thumnail_background)
-                .showImageForEmptyUri(R.drawable.content_image_thumnail_background)
-                .showImageOnFail(R.drawable.content_image_thumnail_background)
-                .cacheInMemory(true)
-                .cacheOnDisc(true)
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
-                .build();
+        if (dirFromImage.equals(""))
+        {
+            options = new DisplayImageOptions.Builder()
+                    .build();
+        }
+        else
+        {
+            options = new DisplayImageOptions.Builder()
+                    .showImageOnLoading(R.drawable.content_image_thumnail_background)
+                    .showImageForEmptyUri(R.drawable.content_image_thumnail_background)
+                    .showImageOnFail(R.drawable.content_image_thumnail_background)
+                    .cacheInMemory(true)
+                    .cacheOnDisc(true)
+                    .considerExifParams(true)
+                    .bitmapConfig(Bitmap.Config.RGB_565)
+                    .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
+                    .build();
+        }
     }
 
     @Override
@@ -80,7 +89,7 @@ public class ViewPagerAdapter extends PagerAdapter
         final RelativeLayout relativeLayoutContainer = (RelativeLayout) view.findViewById(R.id.detail_item_rlContainerContent);
         ImageView ivZomIn = (ImageView) view.findViewById(R.id.detail_item_btZom_in);
         ImageView ivZomOut = (ImageView) view.findViewById(R.id.detail_item_btZom_out);
-        ImageView ivCopy = (ImageView) view.findViewById(R.id.detail_item_btCopy);
+//        ImageView ivCopy = (ImageView) view.findViewById(R.id.detail_item_btCopy);
         final WebView webView = (WebView) view.findViewById(R.id.detail_item_wvContent);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setSupportZoom(true);

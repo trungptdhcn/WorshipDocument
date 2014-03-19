@@ -2,7 +2,7 @@
 
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@android:id/background"
-          android:drawable="@drawable/content_background_seekbar"/>
+          android:drawable="@drawable/content_seekbar_time"/>
     <item android:id="@android:id/secondaryProgress">
         <scale android:scaleWidth="100%"
                android:drawable="@drawable/content_seekbar_volumn"/>

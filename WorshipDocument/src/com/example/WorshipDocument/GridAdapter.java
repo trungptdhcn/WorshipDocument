@@ -40,16 +40,24 @@ public class GridAdapter extends BaseAdapter
         this.mContext = mContext;
         this.dirFrom = dirFrom;
         this.bitmapsFiles = listBitmap(dirFrom);
-        options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.content_image_thumnail_background)
-                .showImageForEmptyUri(R.drawable.content_image_thumnail_background)
-                .showImageOnFail(R.drawable.content_image_thumnail_background)
-                .cacheInMemory(true)
-                .cacheOnDisc(true)
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
-                .build();
+        if (dirFrom.equals(""))
+        {
+            options = new DisplayImageOptions.Builder()
+                    .build();
+        }
+        else
+        {
+            options = new DisplayImageOptions.Builder()
+                    .showImageOnLoading(R.drawable.content_image_thumnail_background)
+                    .showImageForEmptyUri(R.drawable.content_image_thumnail_background)
+                    .showImageOnFail(R.drawable.content_image_thumnail_background)
+                    .cacheInMemory(true)
+                    .cacheOnDisc(true)
+                    .considerExifParams(true)
+                    .bitmapConfig(Bitmap.Config.RGB_565)
+                    .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
+                    .build();
+        }
     }
 
     @Override
@@ -98,9 +106,9 @@ public class GridAdapter extends BaseAdapter
             String[] fileList = mContext.getAssets().list(dirFrom);
             if (fileList != null)
             {
-                for (int i = 0; i <= fileList.length -1; i++)
+                for (int i = 0; i <= fileList.length - 1; i++)
                 {
-                    assetFiles.add("assets://"+dirFrom + "/"+fileList[i]);
+                    assetFiles.add("assets://" + dirFrom + "/" + fileList[i]);
                 }
             }
         }

@@ -21,11 +21,6 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.tool.xml.XMLWorkerHelper;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -53,12 +48,10 @@ public class DetailActivity extends Activity implements View.OnClickListener
 
     private ViewPagerAdapter viewPagerAdapter;
     private ViewPager viewPager;
-    private ImageView ivImage;
     private ImageView btShare;
     private ImageView btPrevious;
     private ImageView btNext;
     private ImageView btHome;
-    private ImageView btCopy;
     int currentPosition;
     String flag;
 
@@ -104,6 +97,8 @@ public class DetailActivity extends Activity implements View.OnClickListener
         else if (flag.equals("flag_3"))
         {
             viewPagerAdapter = new ViewPagerAdapter(this, "html_3", "");
+            getSource(currentPosition + 1);
+            getTimeOfRecordAndShow();
         }
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.setCurrentItem(currentPosition);
@@ -189,6 +184,17 @@ public class DetailActivity extends Activity implements View.OnClickListener
                 uri = Uri.parse("android.resource://com.example.WorshipDocument/raw/_a" + currentPosition);
             }
         }
+        else if (flag.equals("flag_3"))
+        {
+            if (currentPosition < 10)
+            {
+                uri = Uri.parse("android.resource://com.example.WorshipDocument/raw/_b0" + currentPosition);
+            }
+            else
+            {
+                uri = Uri.parse("android.resource://com.example.WorshipDocument/raw/_b" + currentPosition);
+            }
+        }
         Log.e("DetailActivity", "===>" + uri.toString());
         mediaPlayer = MediaPlayer.create(this, uri);
     }
@@ -210,6 +216,11 @@ public class DetailActivity extends Activity implements View.OnClickListener
                     viewPager.setCurrentItem(currentPosition);
 
                 }
+                else if (currentPosition == 0)
+                {
+                    currentPosition = 25;
+                    viewPager.setCurrentItem(currentPosition);
+                }
                 reloadResource();
                 break;
             case R.id.detail_layout_btNext:
@@ -218,12 +229,17 @@ public class DetailActivity extends Activity implements View.OnClickListener
                     currentPosition = currentPosition + 1;
                     viewPager.setCurrentItem(currentPosition);
                 }
+                else if (currentPosition == 26)
+                {
+                    currentPosition = 0;
+                    viewPager.setCurrentItem(currentPosition);
+                }
                 reloadResource();
                 break;
             case R.id.ivPlayOrStop:
                 if (!mediaPlayer.isPlaying())
                 {
-                    btPlayOrStop.setBackgroundDrawable(getResources().getDrawable(R.drawable.content_bt_play));
+                    btPlayOrStop.setBackgroundDrawable(getResources().getDrawable(R.drawable.appwidget_control_pause_neutral));
                     try
                     {
                         mediaPlayer.start();
@@ -237,7 +253,7 @@ public class DetailActivity extends Activity implements View.OnClickListener
                 else
                 {
                     mediaPlayer.pause();
-                    btPlayOrStop.setBackgroundDrawable(getResources().getDrawable(R.drawable.content_bt_pause));
+                    btPlayOrStop.setBackgroundDrawable(getResources().getDrawable(R.drawable.appwidget_control_play_neutral));
                 }
                 break;
             case R.id.detail_layout_btShare:
@@ -254,7 +270,6 @@ public class DetailActivity extends Activity implements View.OnClickListener
 //                    Log.e("DetailActivity", "===>" + e.getMessage());
 //                }
                 break;
-
         }
     }
 
@@ -263,11 +278,25 @@ public class DetailActivity extends Activity implements View.OnClickListener
         String filePath = null;
         if (currentPosition < 10)
         {
-            filePath = "/mnt/sdcard/_0" + currentPosition + ".png";
+            if (flag.equals("flag_1"))
+            {
+                filePath = "/mnt/sdcard/_0" + currentPosition + ".png";
+            }
+            else
+            {
+                filePath = "/mnt/sdcard/_a0" + currentPosition + ".png";
+            }
         }
         else
         {
-            filePath = "/mnt/sdcard/" + currentPosition + ".png";
+            if (flag.equals("flag_1"))
+            {
+                filePath = "/mnt/sdcard/" + currentPosition + ".png";
+            }
+            else
+            {
+                filePath = "/mnt/sdcard/a" + currentPosition + ".png";
+            }
         }
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         Uri uri = Uri.parse("file://" + filePath);
@@ -332,7 +361,7 @@ public class DetailActivity extends Activity implements View.OnClickListener
         else
         {
             mediaPlayer.pause();
-            btPlayOrStop.setBackgroundDrawable(getResources().getDrawable(R.drawable.content_bt_pause));
+            btPlayOrStop.setBackgroundDrawable(getResources().getDrawable(R.drawable.appwidget_control_play_neutral));
             if (mediaPosition == mediaDuration)
             {
                 sbTime.setProgress(0);
@@ -344,69 +373,74 @@ public class DetailActivity extends Activity implements View.OnClickListener
         }
     }
 
-    private void createFileForShare() throws IOException
-    {
-        String[] fileList = ViewPagerAdapter.context.getAssets().list("html_1");
-        File SDCardRoot = Environment.getExternalStorageDirectory();
-        File file = new File(SDCardRoot, "_1.pdf");
-        PdfWriter pdfWriter = null;
-        Document document = new Document();
-        try
-        {
-            pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(file));
-
-            //document header attributes
-//            Image image = Image.getInstance("devi.jpg");
-//            document.add(image);
-//            document.addAuthor("betterThanZero");
-//            document.addCreationDate();
-//            document.addProducer();
-//            document.addCreator("MySampleCode.com");
-//            document.addTitle("Demo for iText XMLWorker");
-            document.setPageSize(PageSize.LETTER);
-
-            //open document
-            document.open();
-
-            //To convert a HTML file from the filesystem
-//            String File_To_Convert = "docs/SamplePDF.html";
-//            AssetManager assetManager = this.getResources().getAssets();
-//            InputStream inputStream = null;
-//            inputStream = assetManager.open("_1.htm");
-//            Uri uriFileHTML = Uri.parse("file:///android_asset/");
-//            InputStream stream = context.getAssets().open(dirFromHtml + "/" + fileList[i]);
-//            String File_To_Convert = fileList.get;
-//            FileInputStream fis = new FileInputStream(File_To_Convert);
-
-            //URL for HTML page
-//            URL myWebPage = new URL("http://demo.mysamplecode.com/");
-//            InputStreamReader fis = new InputStreamReader(myWebPage.openStream());
-
-            //get the XMLWorkerHelper Instance
-            XMLWorkerHelper worker = XMLWorkerHelper.getInstance();
-            //convert to PDF
-//            worker.parseXHtml(pdfWriter, document, inputStream);
-
-            //close the document
-            document.close();
-            //close the writer
-            pdfWriter.close();
-
-        }
-
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        catch (DocumentException e)
-        {
-            e.printStackTrace();
-        }
-    }
+//    private void createFileForShare() throws IOException
+//    {
+//
+//        String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Praying Guide File Out";
+//        File dir = new File(filePath);
+//        if (!dir.exists())
+//        {
+//            dir.mkdirs();
+//        }
+//        File file = new File(dir, "_1.pdf");
+//        PdfWriter pdfWriter = null;
+//        Document document = new Document();
+//        try
+//        {
+//            pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(file));
+//
+//            //document header attributes
+////            Image image = Image.getInstance("devi.jpg");
+////            document.add(image);
+////            document.addAuthor("betterThanZero");
+////            document.addCreationDate();
+////            document.addProducer();
+////            document.addCreator("MySampleCode.com");
+////            document.addTitle("Demo for iText XMLWorker");
+//            document.setPageSize(PageSize.LETTER);
+//
+//            //open document
+//            document.open();
+//
+//            //To convert a HTML file from the filesystem
+//            String File_To_Convert = "/mnt/sdcard/Praying Guide/_1.htm";
+////            AssetManager assetManager = this.getResources().getAssets();
+////            InputStream inputStream = null;
+////            inputStream = assetManager.open("_1.htm");
+////            Uri uriFileHTML = Uri.parse("file:///android_asset/");
+//            InputStream stream = new FileInputStream(File_To_Convert);
+////            String File_To_Convert = fileList.get;
+//            InputStreamReader fis = new InputStreamReader(stream);
+//
+//            //URL for HTML page
+////            URL myWebPage = new URL("http://demo.mysamplecode.com/");
+////            InputStreamReader fis = new InputStreamReader(myWebPage.openStream());
+//
+//            //get the XMLWorkerHelper Instance
+//            XMLWorkerHelper worker = XMLWorkerHelper.getInstance();
+//            //convert to PDF
+//            worker.parseXHtml(pdfWriter, document, fis);
+//
+//            //close the document
+//            document.close();
+//            //close the writer
+//            pdfWriter.close();
+//
+//        }
+//
+//        catch (FileNotFoundException e)
+//        {
+//            e.printStackTrace();
+//        }
+//        catch (IOException e)
+//        {
+//            e.printStackTrace();
+//        }
+//        catch (DocumentException e)
+//        {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void share(String nameApp, String imagePath, String text)
     {
