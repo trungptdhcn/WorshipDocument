@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import com.example.WorshipDocument.adapter.GridAdapter;
 
 import java.util.ArrayList;
 
@@ -55,7 +56,15 @@ public class ContentActivity extends FragmentActivity
                 intent.putExtra("current_image", position);
                 intent.putExtra("flag", flag);
                 startActivity(intent);
+                finish();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        finish();
     }
 }

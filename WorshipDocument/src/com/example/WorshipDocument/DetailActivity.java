@@ -3,7 +3,6 @@ package com.example.WorshipDocument;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.AssetManager;
 import android.media.AudioManager;
@@ -20,7 +19,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
+import com.example.WorshipDocument.adapter.ViewPagerAdapter;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -62,9 +61,9 @@ public class DetailActivity extends Activity implements View.OnClickListener
         viewPager = (ViewPager) findViewById(R.id.myfivepanelpager);
         btPrevious = (ImageView) findViewById(R.id.detail_layout_btPrevious);
         btNext = (ImageView) findViewById(R.id.detail_layout_btNext);
-        btHome = (ImageView) findViewById(R.id.detail_layout_btHome);
+//        btHome = (ImageView) findViewById(R.id.detail_layout_btHome);
         flag = getIntent().getStringExtra("flag");
-        btShare = (ImageView) findViewById(R.id.detail_layout_btShare);
+//        btShare = (ImageView) findViewById(R.id.detail_layout_btShare);
 
         audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         btPlayOrStop = (ImageView) findViewById(R.id.ivPlayOrStop);
@@ -97,6 +96,7 @@ public class DetailActivity extends Activity implements View.OnClickListener
         else if (flag.equals("flag_3"))
         {
             viewPagerAdapter = new ViewPagerAdapter(this, "html_3", "");
+            copyAssets();
             getSource(currentPosition + 1);
             getTimeOfRecordAndShow();
         }
@@ -155,8 +155,8 @@ public class DetailActivity extends Activity implements View.OnClickListener
     {
         btPrevious.setOnClickListener(this);
         btNext.setOnClickListener(this);
-        btHome.setOnClickListener(this);
-        btShare.setOnClickListener(this);
+//        btHome.setOnClickListener(this);
+//        btShare.setOnClickListener(this);
     }
 
     private void getSource(int currentPosition)
@@ -202,37 +202,63 @@ public class DetailActivity extends Activity implements View.OnClickListener
     @Override
     public void onClick(View view)
     {
+        Intent intent = null;
         switch (view.getId())
         {
-            case R.id.detail_layout_btHome:
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
-                finish();
-                break;
+//            case R.id.detail_layout_btHome:
+//                 intent = new Intent(this, MainActivity.class);
+//                startActivity(intent);
+//                finish();
+//                break;
             case R.id.detail_layout_btPrevious:
                 if (currentPosition >= 1)
                 {
                     currentPosition = currentPosition - 1;
-                    viewPager.setCurrentItem(currentPosition);
+                    callNextOrPreviousData();
+//                    viewPager.setCurrentItem(currentPosition);
 
                 }
                 else if (currentPosition == 0)
                 {
-                    currentPosition = 25;
-                    viewPager.setCurrentItem(currentPosition);
+                    if (flag.equals("flag_1"))
+                    {
+                        currentPosition = 25;
+                    }
+                    else if (flag.equals("flag_2"))
+                    {
+                        currentPosition = 12;
+                    }
+                    callNextOrPreviousData();
+//                    viewPager.setCurrentItem(currentPosition);
                 }
                 reloadResource();
                 break;
             case R.id.detail_layout_btNext:
-                if (currentPosition <= 25)
+                if (flag.equals("flag_1"))
                 {
-                    currentPosition = currentPosition + 1;
-                    viewPager.setCurrentItem(currentPosition);
+                    if (currentPosition < 25)
+                    {
+                        currentPosition = currentPosition + 1;
+                        callNextOrPreviousData();
+                    }
+                    else if (currentPosition == 25)
+                    {
+                        currentPosition = 0;
+                        callNextOrPreviousData();
+                    }
                 }
-                else if (currentPosition == 26)
+                else if (flag.equals("flag_2"))
                 {
-                    currentPosition = 0;
-                    viewPager.setCurrentItem(currentPosition);
+                    if (currentPosition < 12)
+                    {
+                        currentPosition = currentPosition + 1;
+                        callNextOrPreviousData();
+                    }
+                    else if (currentPosition == 12)
+                    {
+                        currentPosition = 0;
+                        callNextOrPreviousData();
+                    }
                 }
                 reloadResource();
                 break;
@@ -256,8 +282,8 @@ public class DetailActivity extends Activity implements View.OnClickListener
                     btPlayOrStop.setBackgroundDrawable(getResources().getDrawable(R.drawable.appwidget_control_play_neutral));
                 }
                 break;
-            case R.id.detail_layout_btShare:
-                shareOnWhatsApp(currentPosition);
+//            case R.id.detail_layout_btShare:
+//                shareOnWhatsApp(currentPosition);
 //                shareOnFacebook(currentPosition);
 //
 //                Toast.makeText(getApplicationContext(), "Button Share was clicked!", 1).show();
@@ -265,79 +291,91 @@ public class DetailActivity extends Activity implements View.OnClickListener
 //                {
 //                    createFileForShare();
 //                }
-//                catch (FileNotFoundException e)
+//                catch (IOException e)
 //                {
 //                    Log.e("DetailActivity", "===>" + e.getMessage());
 //                }
-                break;
+//                break;
         }
     }
 
-    private void shareOnWhatsApp(int currentPosition)
+    private void callNextOrPreviousData()
     {
-        String filePath = null;
-        if (currentPosition < 10)
-        {
-            if (flag.equals("flag_1"))
-            {
-                filePath = "/mnt/sdcard/_0" + currentPosition + ".png";
-            }
-            else
-            {
-                filePath = "/mnt/sdcard/_a0" + currentPosition + ".png";
-            }
-        }
-        else
-        {
-            if (flag.equals("flag_1"))
-            {
-                filePath = "/mnt/sdcard/" + currentPosition + ".png";
-            }
-            else
-            {
-                filePath = "/mnt/sdcard/a" + currentPosition + ".png";
-            }
-        }
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        Uri uri = Uri.parse("file://" + filePath);
-
-        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-        shareIntent.setType("image/plain");
-        startActivity(shareIntent);
+        Intent intent;
+        intent = new Intent(getApplicationContext(), DetailActivity.class);
+        intent.putExtra("current_image", currentPosition);
+        intent.putExtra("flag", flag);
+        startActivity(intent);
+        finish();
     }
 
-    private void shareOnFacebook(int currentPosition)
-    {
-        String facebookPackageName = "com.facebook.katana";
-        try
-        {
-            String filePath = null;
-            currentPosition = currentPosition + 1;
-            getPackageManager().getApplicationInfo(facebookPackageName, 0);
-            if (currentPosition < 10)
-            {
-                filePath = "/mnt/sdcard/_0" + currentPosition + ".png";
-            }
-            else
-            {
-                filePath = "/mnt/sdcard/" + currentPosition + ".png";
-            }
-            Log.e("DetailActivity", "===>" + filePath);
-            share("facebook", filePath, "Test");
-        }
-        catch (PackageManager.NameNotFoundException e)
-        {
-            Toast.makeText(getApplicationContext(), "Facebook not found! INSTALL.", Toast.LENGTH_LONG).show();
-            Uri uri = Uri.parse("market://details?id=" + facebookPackageName);
-            Intent i = new Intent(Intent.ACTION_VIEW, uri);
-            startActivity(i);
-        }
-    }
+//    private void shareOnWhatsApp(int currentPosition)
+//    {
+//        String filePath = null;
+//        if (currentPosition < 10)
+//        {
+//            if (flag.equals("flag_1"))
+//            {
+//                filePath = "/mnt/sdcard/Praying Guide/_0" + currentPosition + ".htm";
+//            }
+//            else
+//            {
+//                filePath = "/mnt/sdcard/Praying Guide/_a0" + currentPosition + ".htm";
+//            }
+//        }
+//        else
+//        {
+//            if (flag.equals("flag_1"))
+//            {
+//                filePath = "/mnt/sdcard/Praying Guide/" + currentPosition + ".htm";
+//            }
+//            else
+//            {
+//                filePath = "/mnt/sdcard/Praying Guide/a" + currentPosition + ".htm";
+//            }
+//        }
+//        Intent whatsApp = new Intent(Intent.ACTION_SEND);
+//        whatsApp.setType("plain/text");
+//        whatsApp.setPackage("com.whatsapp");
+//        whatsApp.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(filePath)));
+//        startActivity(Intent.createChooser(whatsApp, "Test"));
+//        startActivity(whatsApp);
+//    }
+
+//    private void shareOnFacebook(int currentPosition)
+//    {
+//        String facebookPackageName = "com.facebook.katana";
+//        try
+//        {
+//            String filePath = null;
+//            currentPosition = currentPosition + 1;
+//            getPackageManager().getApplicationInfo(facebookPackageName, 0);
+//            if (currentPosition < 10)
+//            {
+//                filePath = "/mnt/sdcard/_0" + currentPosition + ".png";
+//            }
+//            else
+//            {
+//                filePath = "/mnt/sdcard/" + currentPosition + ".png";
+//            }
+//            Log.e("DetailActivity", "===>" + filePath);
+//            share("facebook", filePath, "Test");
+//        }
+//        catch (PackageManager.NameNotFoundException e)
+//        {
+//            Toast.makeText(getApplicationContext(), "Facebook not found! INSTALL.", Toast.LENGTH_LONG).show();
+//            Uri uri = Uri.parse("market://details?id=" + facebookPackageName);
+//            Intent i = new Intent(Intent.ACTION_VIEW, uri);
+//            startActivity(i);
+//        }
+//    }
 
     private void reloadResource()
     {
         mediaPlayer.stop();
         mediaPlayer.seekTo(0);
+        mediaPlayer.reset();
+        mediaPlayer.release();
         getSource(currentPosition + 1);
         getTimeOfRecordAndShow();
     }
@@ -404,26 +442,12 @@ public class DetailActivity extends Activity implements View.OnClickListener
 //
 //            //To convert a HTML file from the filesystem
 //            String File_To_Convert = "/mnt/sdcard/Praying Guide/_1.htm";
-////            AssetManager assetManager = this.getResources().getAssets();
-////            InputStream inputStream = null;
-////            inputStream = assetManager.open("_1.htm");
-////            Uri uriFileHTML = Uri.parse("file:///android_asset/");
-//            InputStream stream = new FileInputStream(File_To_Convert);
-////            String File_To_Convert = fileList.get;
+//            FileInputStream stream = new FileInputStream(File_To_Convert);
 //            InputStreamReader fis = new InputStreamReader(stream);
-//
-//            //URL for HTML page
-////            URL myWebPage = new URL("http://demo.mysamplecode.com/");
-////            InputStreamReader fis = new InputStreamReader(myWebPage.openStream());
-//
-//            //get the XMLWorkerHelper Instance
 //            XMLWorkerHelper worker = XMLWorkerHelper.getInstance();
 //            //convert to PDF
 //            worker.parseXHtml(pdfWriter, document, fis);
-//
-//            //close the document
 //            document.close();
-//            //close the writer
 //            pdfWriter.close();
 //
 //        }
@@ -494,9 +518,15 @@ public class DetailActivity extends Activity implements View.OnClickListener
             try
             {
                 in = assetManager.open(filename);
-                File SDCardRoot = Environment.getExternalStorageDirectory();
+                String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Praying Guide";
+                File dir = new File(filePath);
+                if (!dir.exists())
+                {
+                    dir.mkdirs();
+                }
+//                File SDCardRoot = Environment.getExternalStorageDirectory();
                 // create a new file, to save the downloaded file
-                File outFile = new File(SDCardRoot, filename);
+                File outFile = new File(dir, filename);
                 Log.e("DetailActivity", "===>" + outFile.getAbsolutePath());
                 out = new FileOutputStream(outFile);
                 copyFile(in, out);
@@ -521,5 +551,19 @@ public class DetailActivity extends Activity implements View.OnClickListener
         {
             out.write(buffer, 0, read);
         }
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        mediaPlayer.stop();
+        mediaPlayer.seekTo(0);
+        mediaPlayer.reset();
+        mediaPlayer.release();
+        Intent intent = new Intent(getApplicationContext(), ContentActivity.class);
+        intent.putExtra("flag", getIntent().getStringExtra("flag"));
+        startActivity(intent);
+        finish();
     }
 }

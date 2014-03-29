@@ -16,14 +16,26 @@
             </intent-filter>
         </activity>
         <!--<activity android:name=".MainActivity"-->
-                  <!--android:screenOrientation="portrait"/>-->
+        <!--android:screenOrientation="portrait"/>-->
         <activity android:name=".ContentActivity"
                   android:theme="@android:style/Theme.NoTitleBar"
+                  android:launchMode="singleTop"
                   android:screenOrientation="portrait"/>
         <activity android:name=".DetailActivity"
+                  android:hardwareAccelerated="false"
                   android:theme="@android:style/Theme.NoTitleBar"
                   android:screenOrientation="portrait"/>
-        <activity android:name=".ContentActivity3"/>
-        <!--<activity android:name=".ContentActivity2"/>-->
+        <activity android:name=".AboutActivity"
+                  android:theme="@android:style/Theme.NoTitleBar"
+                  android:launchMode="singleTop"
+                  android:screenOrientation="portrait"/>
+        <activity android:name=".ContentScreen3Activity"
+                  android:theme="@android:style/Theme.NoTitleBar"
+                  android:launchMode="singleTop"
+                  android:screenOrientation="portrait"/>
+        <activity android:name=".AppInfo"
+                  android:theme="@android:style/Theme.NoTitleBar"
+                  android:launchMode="singleTop"
+                  android:screenOrientation="portrait"/>
     </application>
 </manifest>
