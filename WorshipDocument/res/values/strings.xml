@@ -3,4 +3,8 @@
     <string name="app_name">Praying Guide</string>
     <string name="program_timeCurPlay">1:68</string>
     <string name="program_timePlay">4:86</string>
+    <string name="share_face">Share to Facebook</string>
+    <string name="share_email">Sent email</string>
+    <string name="share_whatsapp">Share to Whatsapp</string>
+    <string name="share_dropbox">Share to Dropbox</string>
 </resources>

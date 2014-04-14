@@ -15,8 +15,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <!--<activity android:name=".MainActivity"-->
-        <!--android:screenOrientation="portrait"/>-->
         <activity android:name=".ContentActivity"
                   android:theme="@android:style/Theme.NoTitleBar"
                   android:launchMode="singleTop"
@@ -25,7 +23,7 @@
                   android:hardwareAccelerated="false"
                   android:theme="@android:style/Theme.NoTitleBar"
                   android:screenOrientation="portrait"/>
-        <activity android:name=".AboutActivity"
+        <activity android:name=".InfoActivity"
                   android:theme="@android:style/Theme.NoTitleBar"
                   android:launchMode="singleTop"
                   android:screenOrientation="portrait"/>
@@ -33,7 +31,7 @@
                   android:theme="@android:style/Theme.NoTitleBar"
                   android:launchMode="singleTop"
                   android:screenOrientation="portrait"/>
-        <activity android:name=".AppInfo"
+        <activity android:name=".AboutActivity"
                   android:theme="@android:style/Theme.NoTitleBar"
                   android:launchMode="singleTop"
                   android:screenOrientation="portrait"/>

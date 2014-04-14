@@ -3,7 +3,6 @@ package com.example.WorshipDocument;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.content.res.AssetManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -11,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -22,8 +20,6 @@ import android.widget.TextView;
 import com.example.WorshipDocument.adapter.ViewPagerAdapter;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -47,12 +43,11 @@ public class DetailActivity extends Activity implements View.OnClickListener
 
     private ViewPagerAdapter viewPagerAdapter;
     private ViewPager viewPager;
-    private ImageView btShare;
     private ImageView btPrevious;
     private ImageView btNext;
-    private ImageView btHome;
     int currentPosition;
     String flag;
+    boolean isFinish = false;
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -61,9 +56,7 @@ public class DetailActivity extends Activity implements View.OnClickListener
         viewPager = (ViewPager) findViewById(R.id.myfivepanelpager);
         btPrevious = (ImageView) findViewById(R.id.detail_layout_btPrevious);
         btNext = (ImageView) findViewById(R.id.detail_layout_btNext);
-//        btHome = (ImageView) findViewById(R.id.detail_layout_btHome);
         flag = getIntent().getStringExtra("flag");
-//        btShare = (ImageView) findViewById(R.id.detail_layout_btShare);
 
         audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         btPlayOrStop = (ImageView) findViewById(R.id.ivPlayOrStop);
@@ -79,27 +72,14 @@ public class DetailActivity extends Activity implements View.OnClickListener
         {
             currentPosition = position;
         }
-        if (flag.equals("flag_1"))
-        {
-            viewPagerAdapter = new ViewPagerAdapter(this, "html_1", "image_1");
-            copyAssets();
-            getSource(currentPosition + 1);
-            getTimeOfRecordAndShow();
-        }
-        else if (flag.equals("flag_2"))
-        {
-            viewPagerAdapter = new ViewPagerAdapter(this, "html_2", "image_2");
-            copyAssets();
-            getSource(currentPosition + 1);
-            getTimeOfRecordAndShow();
-        }
-        else if (flag.equals("flag_3"))
-        {
-            viewPagerAdapter = new ViewPagerAdapter(this, "html_3", "");
-            copyAssets();
-            getSource(currentPosition + 1);
-            getTimeOfRecordAndShow();
-        }
+        prepareData();
+//        else if (flag.equals("flag_3"))
+//        {
+//            viewPagerAdapter = new ViewPagerAdapter(this, "html_3", "");
+//            copyAssets();
+//            getSource(currentPosition + 1);
+//            getTimeOfRecordAndShow();
+//        }
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.setCurrentItem(currentPosition);
         clickEvent();
@@ -115,6 +95,24 @@ public class DetailActivity extends Activity implements View.OnClickListener
             }
         });
 
+    }
+
+    private void prepareData()
+    {
+        if (flag.equals("flag_1"))
+        {
+            viewPagerAdapter = new ViewPagerAdapter(this, "html_1", "image_1");
+            copyAssets();
+            getSource(currentPosition + 1);
+            getTimeOfRecordAndShow();
+        }
+        else if (flag.equals("flag_2"))
+        {
+            viewPagerAdapter = new ViewPagerAdapter(this, "html_2", "image_2");
+            copyAssets();
+            getSource(currentPosition + 1);
+            getTimeOfRecordAndShow();
+        }
     }
 
     private void seekChange(View v)
@@ -155,8 +153,6 @@ public class DetailActivity extends Activity implements View.OnClickListener
     {
         btPrevious.setOnClickListener(this);
         btNext.setOnClickListener(this);
-//        btHome.setOnClickListener(this);
-//        btShare.setOnClickListener(this);
     }
 
     private void getSource(int currentPosition)
@@ -205,17 +201,11 @@ public class DetailActivity extends Activity implements View.OnClickListener
         Intent intent = null;
         switch (view.getId())
         {
-//            case R.id.detail_layout_btHome:
-//                 intent = new Intent(this, MainActivity.class);
-//                startActivity(intent);
-//                finish();
-//                break;
             case R.id.detail_layout_btPrevious:
                 if (currentPosition >= 1)
                 {
                     currentPosition = currentPosition - 1;
                     callNextOrPreviousData();
-//                    viewPager.setCurrentItem(currentPosition);
 
                 }
                 else if (currentPosition == 0)
@@ -229,7 +219,6 @@ public class DetailActivity extends Activity implements View.OnClickListener
                         currentPosition = 12;
                     }
                     callNextOrPreviousData();
-//                    viewPager.setCurrentItem(currentPosition);
                 }
                 reloadResource();
                 break;
@@ -282,20 +271,6 @@ public class DetailActivity extends Activity implements View.OnClickListener
                     btPlayOrStop.setBackgroundDrawable(getResources().getDrawable(R.drawable.appwidget_control_play_neutral));
                 }
                 break;
-//            case R.id.detail_layout_btShare:
-//                shareOnWhatsApp(currentPosition);
-//                shareOnFacebook(currentPosition);
-//
-//                Toast.makeText(getApplicationContext(), "Button Share was clicked!", 1).show();
-//                try
-//                {
-//                    createFileForShare();
-//                }
-//                catch (IOException e)
-//                {
-//                    Log.e("DetailActivity", "===>" + e.getMessage());
-//                }
-//                break;
         }
     }
 
@@ -309,66 +284,6 @@ public class DetailActivity extends Activity implements View.OnClickListener
         finish();
     }
 
-//    private void shareOnWhatsApp(int currentPosition)
-//    {
-//        String filePath = null;
-//        if (currentPosition < 10)
-//        {
-//            if (flag.equals("flag_1"))
-//            {
-//                filePath = "/mnt/sdcard/Praying Guide/_0" + currentPosition + ".htm";
-//            }
-//            else
-//            {
-//                filePath = "/mnt/sdcard/Praying Guide/_a0" + currentPosition + ".htm";
-//            }
-//        }
-//        else
-//        {
-//            if (flag.equals("flag_1"))
-//            {
-//                filePath = "/mnt/sdcard/Praying Guide/" + currentPosition + ".htm";
-//            }
-//            else
-//            {
-//                filePath = "/mnt/sdcard/Praying Guide/a" + currentPosition + ".htm";
-//            }
-//        }
-//        Intent whatsApp = new Intent(Intent.ACTION_SEND);
-//        whatsApp.setType("plain/text");
-//        whatsApp.setPackage("com.whatsapp");
-//        whatsApp.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(filePath)));
-//        startActivity(Intent.createChooser(whatsApp, "Test"));
-//        startActivity(whatsApp);
-//    }
-
-//    private void shareOnFacebook(int currentPosition)
-//    {
-//        String facebookPackageName = "com.facebook.katana";
-//        try
-//        {
-//            String filePath = null;
-//            currentPosition = currentPosition + 1;
-//            getPackageManager().getApplicationInfo(facebookPackageName, 0);
-//            if (currentPosition < 10)
-//            {
-//                filePath = "/mnt/sdcard/_0" + currentPosition + ".png";
-//            }
-//            else
-//            {
-//                filePath = "/mnt/sdcard/" + currentPosition + ".png";
-//            }
-//            Log.e("DetailActivity", "===>" + filePath);
-//            share("facebook", filePath, "Test");
-//        }
-//        catch (PackageManager.NameNotFoundException e)
-//        {
-//            Toast.makeText(getApplicationContext(), "Facebook not found! INSTALL.", Toast.LENGTH_LONG).show();
-//            Uri uri = Uri.parse("market://details?id=" + facebookPackageName);
-//            Intent i = new Intent(Intent.ACTION_VIEW, uri);
-//            startActivity(i);
-//        }
-//    }
 
     private void reloadResource()
     {
@@ -410,94 +325,6 @@ public class DetailActivity extends Activity implements View.OnClickListener
             }
         }
     }
-
-//    private void createFileForShare() throws IOException
-//    {
-//
-//        String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Praying Guide File Out";
-//        File dir = new File(filePath);
-//        if (!dir.exists())
-//        {
-//            dir.mkdirs();
-//        }
-//        File file = new File(dir, "_1.pdf");
-//        PdfWriter pdfWriter = null;
-//        Document document = new Document();
-//        try
-//        {
-//            pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(file));
-//
-//            //document header attributes
-////            Image image = Image.getInstance("devi.jpg");
-////            document.add(image);
-////            document.addAuthor("betterThanZero");
-////            document.addCreationDate();
-////            document.addProducer();
-////            document.addCreator("MySampleCode.com");
-////            document.addTitle("Demo for iText XMLWorker");
-//            document.setPageSize(PageSize.LETTER);
-//
-//            //open document
-//            document.open();
-//
-//            //To convert a HTML file from the filesystem
-//            String File_To_Convert = "/mnt/sdcard/Praying Guide/_1.htm";
-//            FileInputStream stream = new FileInputStream(File_To_Convert);
-//            InputStreamReader fis = new InputStreamReader(stream);
-//            XMLWorkerHelper worker = XMLWorkerHelper.getInstance();
-//            //convert to PDF
-//            worker.parseXHtml(pdfWriter, document, fis);
-//            document.close();
-//            pdfWriter.close();
-//
-//        }
-//
-//        catch (FileNotFoundException e)
-//        {
-//            e.printStackTrace();
-//        }
-//        catch (IOException e)
-//        {
-//            e.printStackTrace();
-//        }
-//        catch (DocumentException e)
-//        {
-//            e.printStackTrace();
-//        }
-//    }
-
-    private void share(String nameApp, String imagePath, String text)
-    {
-        try
-        {
-            List<Intent> targetedShareIntents = new ArrayList<Intent>();
-            Intent share = new Intent(android.content.Intent.ACTION_SEND);
-            share.setType("image/jpeg");
-            List<ResolveInfo> resInfo = getPackageManager().queryIntentActivities(share, 0);
-            if (!resInfo.isEmpty())
-            {
-                for (ResolveInfo info : resInfo)
-                {
-                    Intent targetedShare = new Intent(android.content.Intent.ACTION_SEND);
-                    targetedShare.setType("image/jpeg");
-                    if (info.activityInfo.packageName.toLowerCase().contains(nameApp) || info.activityInfo.name.toLowerCase().contains(nameApp))
-                    {
-                        targetedShare.putExtra(Intent.EXTRA_TEXT, text);
-                        targetedShare.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(imagePath)));
-                        targetedShare.setPackage(info.activityInfo.packageName);
-                        targetedShareIntents.add(targetedShare);
-                    }
-                }
-                Intent chooserIntent = Intent.createChooser(targetedShareIntents.remove(0), "Select app to share");
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetedShareIntents.toArray(new Parcelable[]{}));
-                startActivity(chooserIntent);
-            }
-        }
-        catch (Exception e)
-        {
-        }
-    }
-
 
     private void copyAssets()
     {

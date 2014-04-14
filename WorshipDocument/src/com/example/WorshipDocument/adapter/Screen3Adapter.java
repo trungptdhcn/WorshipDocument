@@ -33,6 +33,7 @@ public class Screen3Adapter extends ArrayAdapter<String>
         View rowView = inflater.inflate(R.layout.content_screen3, parent, false);
         WebView webView = (WebView) rowView.findViewById(R.id.label);
         final ImageView imageView = (ImageView) rowView.findViewById(R.id.logo);
+        webView.setBackgroundColor(0x00000000);
         webView.getSettings().setDefaultTextEncodingName("utf-8");
         webView.loadDataWithBaseURL(null, values[position], "text/html", "utf-8", null);
         imageView.setOnClickListener(new View.OnClickListener()

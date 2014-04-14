@@ -3,9 +3,12 @@ package com.example.WorshipDocument.adapter;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -18,6 +21,11 @@ import android.widget.RelativeLayout;
 import com.example.WorshipDocument.MainActivity;
 import com.example.WorshipDocument.R;
 import com.example.WorshipDocument.data.ContentDetail;
+import com.example.WorshipDocument.popup.Popup;
+import com.example.WorshipDocument.popup.PopupItem;
+import com.example.WorshipDocument.popup.action.PopupListener;
+import com.example.WorshipDocument.popup.common.PopupLocationType;
+import com.example.WorshipDocument.popup.common.PopupSetting;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -36,6 +44,10 @@ import java.util.List;
  */
 public class ViewPagerAdapter extends PagerAdapter
 {
+    Popup popupControl;
+    List<PopupItem> itemListShare = new ArrayList<PopupItem>();
+    ;
+    Boolean isShowing = false;
     private Context context;
     private String dirHtml;
     private List<ContentDetail> contentDetailList = new ArrayList<ContentDetail>();
@@ -66,6 +78,7 @@ public class ViewPagerAdapter extends PagerAdapter
                     .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
                     .build();
         }
+        initPopupMenu();
     }
 
     @Override
@@ -93,16 +106,15 @@ public class ViewPagerAdapter extends PagerAdapter
         ImageView ivZomIn = (ImageView) view.findViewById(R.id.detail_layout_btZoomIn);
         ImageView ivZomOut = (ImageView) view.findViewById(R.id.detail_layout_btZoomOut);
         ImageView btHome = (ImageView) view.findViewById(R.id.detail_layout_btHome);
-        ImageView btShare = (ImageView) view.findViewById(R.id.detail_layout_btShare);
+        final ImageView btShare = (ImageView) view.findViewById(R.id.detail_layout_btShare);
 
-//        ImageView ivCopy = (ImageView) view.findViewById(R.id.detail_item_btCopy);
         final WebView webView = (WebView) view.findViewById(R.id.detail_item_wvContent);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setDefaultTextEncodingName("utf-8");
         webView.setHapticFeedbackEnabled(true);
         webView.setLongClickable(true);
-        webView.setBackgroundResource(R.drawable.common_bg);
+        webView.setBackgroundColor(0x00000000);
         webView.loadDataWithBaseURL(null, contentDetailList.get(position).getContent(), "text/html", "utf-8", null);
         final ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         ivZomIn.setOnClickListener(new View.OnClickListener()
@@ -127,7 +139,14 @@ public class ViewPagerAdapter extends PagerAdapter
             @Override
             public void onClick(View view)
             {
-                shareOnWhatsApp(position);
+//                setupPopup(itemListShare, position);
+//                popupControl.showBelow(btShare, PopupLocationType.RIGHT);
+//                shareOnWhatsApp(position);
+                String filePath = getFilePath(position + 1);
+                Intent dropbox = new Intent(Intent.ACTION_SEND);
+                dropbox.setType("text/plain");
+                dropbox.putExtra(Intent.EXTRA_TEXT, contentDetailList.get(position).getContent());
+                context.startActivity(dropbox);
             }
         });
         ivZomOut.setOnClickListener(new View.OnClickListener()
@@ -150,41 +169,174 @@ public class ViewPagerAdapter extends PagerAdapter
         ImageView ivImage = (ImageView) view.findViewById(R.id.detail_item_ivImage);
         imageLoader.displayImage(contentDetailList.get(position).getFileImage(), ivImage, options);
 
+
+        setupPopup(itemListShare, position);
+        if (isShowing)
+        {
+            popupControl.showAbove(btShare, PopupLocationType.CENTER);
+        }
+
         return view;
+    }
+
+    private void setupPopup(final List<PopupItem> itemListShare, final int position)
+    {
+        popupControl = new Popup(context, PopupSetting.STRING_ONLY_TYPE, itemListShare);
+
+        popupControl.setOnItemClickListener(new PopupListener()
+        {
+            String filePath = null;
+
+            @Override
+            public void onItemClick(int itemId, Boolean value)
+            {
+                switch (itemId)
+                {
+                    case 0:
+                        //Todo share to face
+                        try
+                        {
+                            shareOnFacebook(position);
+                        }
+                        catch (PackageManager.NameNotFoundException e)
+                        {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case 1:
+                        //Todo share to whatsapp
+                        shareOnWhatsApp(position);
+                        break;
+                    case 2:
+                        //Todo share to dropbox
+                        filePath = getFilePath(position + 1);
+                        Intent dropbox = new Intent(Intent.ACTION_SEND);
+                        dropbox.setType("text/plain");
+                        dropbox.putExtra(Intent.EXTRA_TEXT, "test tset adsf klsjdfkasd");
+                        context.startActivity(dropbox);
+                        break;
+                    case 3:
+                        //Todo share to email
+                        filePath = getFilePath(position + 1);
+                        String subject = "Praying Guide App";
+                        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                        emailIntent.putExtra(Intent.EXTRA_EMAIL, "");
+                        emailIntent.setType("image/jpeg");
+                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                        emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(filePath)));
+                        emailIntent.setType("message/rfc822");
+                        context.startActivity(emailIntent);
+
+                        break;
+                }
+            }
+
+            @Override
+            public void onDismiss()
+            {
+
+            }
+        });
+    }
+
+    private void initPopupMenu()
+    {
+        itemListShare.add(new PopupItem(0, context.getResources().getString(R.string.share_face), "true"));
+        itemListShare.add(new PopupItem(1, context.getResources().getString(R.string.share_whatsapp), "true"));
+        itemListShare.add(new PopupItem(2, context.getResources().getString(R.string.share_dropbox), "true"));
+        itemListShare.add(new PopupItem(3, context.getResources().getString(R.string.share_email), "true"));
+    }
+
+    private void shareOnFacebook(int currentPosition) throws PackageManager.NameNotFoundException
+    {
+        String facebookPackageName = "com.facebook.katana";
+        try
+        {
+            String filePath = null;
+            currentPosition = currentPosition + 1;
+            context.getPackageManager().getApplicationInfo(facebookPackageName, 0);
+            filePath = getFilePath(currentPosition);
+            share("facebook", filePath, "Test");
+        }
+        catch (PackageManager.NameNotFoundException e)
+        {
+            Uri uri = Uri.parse("market://details?id=" + facebookPackageName);
+            Intent i = new Intent(Intent.ACTION_VIEW, uri);
+            context.startActivity(i);
+        }
+    }
+
+    private void share(String nameApp, String imagePath, String text)
+    {
+        try
+        {
+            List<Intent> targetedShareIntents = new ArrayList<Intent>();
+            Intent share = new Intent(android.content.Intent.ACTION_SEND);
+            share.setType("image/jpeg");
+            List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(share, 0);
+            if (!resInfo.isEmpty())
+            {
+                for (ResolveInfo info : resInfo)
+                {
+                    Intent targetedShare = new Intent(android.content.Intent.ACTION_SEND);
+                    targetedShare.setType("image/jpeg");
+                    if (info.activityInfo.packageName.toLowerCase().contains(nameApp) || info.activityInfo.name.toLowerCase().contains(nameApp))
+                    {
+                        targetedShare.putExtra(Intent.EXTRA_TEXT, text);
+                        targetedShare.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(imagePath)));
+                        targetedShare.setPackage(info.activityInfo.packageName);
+                        targetedShareIntents.add(targetedShare);
+                    }
+                }
+                Intent chooserIntent = Intent.createChooser(targetedShareIntents.remove(0), "Select app to share");
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetedShareIntents.toArray(new Parcelable[]{}));
+                context.startActivity(chooserIntent);
+            }
+        }
+        catch (Exception e)
+        {
+        }
     }
 
     private void shareOnWhatsApp(int currentPosition)
     {
         currentPosition = currentPosition + 1;
         String filePath = null;
-        if (currentPosition < 10)
-        {
-            if (dirHtml.equals("html_1"))
-            {
-                filePath = "/mnt/sdcard/Praying Guide/_0" + currentPosition + ".png";
-            }
-            else
-            {
-                filePath = "/mnt/sdcard/Praying Guide/_a0" + currentPosition + ".png";
-            }
-        }
-        else
-        {
-            if (dirHtml.equals("html_2"))
-            {
-                filePath = "/mnt/sdcard/Praying Guide/" + currentPosition + ".png";
-            }
-            else
-            {
-                filePath = "/mnt/sdcard/Praying Guide/a" + currentPosition + ".png";
-            }
-        }
+        filePath = getFilePath(currentPosition);
         Intent whatsApp = new Intent(Intent.ACTION_SEND);
         whatsApp.setType("image/jpeg");
         whatsApp.setPackage("com.whatsapp");
         whatsApp.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(filePath)));
         context.startActivity(Intent.createChooser(whatsApp, "Test"));
         context.startActivity(whatsApp);
+    }
+
+    private String getFilePath(int currentPosition)
+    {
+        String filePath;
+        if (currentPosition < 10)
+        {
+            if (dirHtml.equals("html_1"))
+            {
+                filePath = "/mnt/sdcard/Praying Guide/_0" + currentPosition + ".htm";
+            }
+            else
+            {
+                filePath = "/mnt/sdcard/Praying Guide/_a0" + currentPosition + ".htm";
+            }
+        }
+        else
+        {
+            if (dirHtml.equals("html_2"))
+            {
+                filePath = "/mnt/sdcard/Praying Guide/_" + currentPosition + ".htm";
+            }
+            else
+            {
+                filePath = "/mnt/sdcard/Praying Guide/_a" + currentPosition + ".htm";
+            }
+        }
+        return filePath;
     }
 
     @Override

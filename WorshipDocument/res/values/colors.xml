@@ -2,4 +2,5 @@
 <resources>
     <color name="ColorTextViewTime">#8a8a8a</color>
     <color name="color_while">#FFFFFF</color>
+    <color name="bar_background">#DCDCDC</color>
 </resources>

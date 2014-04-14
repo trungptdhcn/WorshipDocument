@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import java.io.File;
-
 /**
  * User: Khiemvx
  * Date: 3/17/14
@@ -68,18 +66,16 @@ public class AboutActivity extends Activity implements View.OnClickListener
                 startActivity(Intent.createChooser(email, "Choose an Email client"));
                 break;
             case R.id.btInfo:
-                Intent intent = new Intent(AboutActivity.this, AppInfo.class);
+                Intent intent = new Intent(AboutActivity.this, InfoActivity.class);
                 startActivity(intent);
                 break;
             case R.id.btShare:
-                String filePath = "/mnt/sdcard/Praying Guide/_01" + ".png";
-                ;
-                Intent whatsApp = new Intent(Intent.ACTION_SEND);
-                whatsApp.setType("image/jpeg");
-                whatsApp.setPackage("com.whatsapp");
-                whatsApp.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(filePath)));
-                startActivity(Intent.createChooser(whatsApp, "Test"));
-                startActivity(whatsApp);
+                Intent dropbox = new Intent(Intent.ACTION_SEND);
+                dropbox.setType("text/plain");
+                dropbox.putExtra(Intent.EXTRA_TEXT, "\"إذَا أرادَ القيامَ واقفًا بينَ يدَيْ ربِه العظيمِ جلَّ في علاهُ أنْ يُخلصَ \\n\" +\n" +
+                        "                        \"القصدَ والمرادَ للهِ تعالَى ثم يُعيِّنَ الصَّلاةَ التي يريدُ القيامَ لها ظهرًا \\n\" +\n" +
+                        "                        \"أو عصرًا...ثمَّ يعينَها فرضًا أو نفل");
+                startActivity(dropbox);
                 break;
         }
     }
